@@ -1,7 +1,6 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import GeolocationSetup from "./components/GeolocationSetup.vue";
 import PageLoader from "./components/PageLoader.vue";
 import AppNotification from "./components/AppNotification.vue";
 
@@ -24,7 +23,6 @@ onMounted(() => {
     <app-navbar />
     <app-notification />
     <page-loader v-if="isLoading" />
-    <geolocation-setup @updated="onMounted" />
 <!--    <div class="box">I'm in a box.</div>-->
   </div>
 
