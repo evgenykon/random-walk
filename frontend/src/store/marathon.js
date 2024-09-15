@@ -205,5 +205,11 @@ export const marathonStore = reactive({
         }
         this.currentTarget.takeAt = new Date().getTime();
         this.currentTarget.score = score;
+
+        this.current.takenPoints.push(this.currentTarget)
+
+        if (this.current.takenPoints.length >= this.current.targets.length) {
+            return this.finishCurrent();
+        }
     }
 })

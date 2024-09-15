@@ -33,6 +33,7 @@ onBeforeMount(() => {
 
 <template>
 <div class="box">
+  {{ position }}
 
   <ol-map class="ol-map-container" :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true">
     <ol-view

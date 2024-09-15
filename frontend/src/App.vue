@@ -2,6 +2,7 @@
 <script setup>
 import {onBeforeMount, ref} from "vue";
 import { marathonStore } from './store/marathon.js'
+import { geoStore } from './store/geo.js'
 import PageLoader from "./components/PageLoader.vue";
 import AppNotification from "./components/AppNotification.vue";
 
@@ -40,7 +41,12 @@ const openMarathon = (item) => {
                        @cancel="showScreen = 'home'"
                        @create="showScreen = 'home'"
     />
-    <marathon-data v-if="showScreen === 'home'" @open="openMarathon"></marathon-data>
+
+    <h3 v-if="showScreen === 'home'" class="title">Random Marathon</h3>
+    <marathon-data v-if="showScreen === 'home' && geoStore.position" @open="openMarathon"></marathon-data>
+    <div  v-if="showScreen === 'home' && !geoStore.position" class="box m-5">
+      <h4 class="subtitle">Waiting for GPS data</h4>
+    </div>
     <current-marathon v-if="showScreen === 'marathon'" @home="showScreen = 'home'" />
   </div>
 

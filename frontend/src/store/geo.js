@@ -6,11 +6,11 @@ export const geoStore = reactive({
     apiError: null,
 
     get position() {
-        //return this.geoApiData ? [this.geoApiData.latitude, this.geoApiData.longitude,] : null
-        return [
-            56.0195,
-            37.2156, // 37.205,
-        ];
+        return this.geoApiData ? [this.geoApiData.latitude, this.geoApiData.longitude,] : null
+        // return [
+        //     56.0195,
+        //     37.2156, // 37.205,
+        // ];
     },
 
     setGeoAPiData(value) {
@@ -20,5 +20,12 @@ export const geoStore = reactive({
 
     setApiError(err) {
         this.apiError = err;
+    },
+
+    testChangeGeo(up, right) {
+        this.geoApiData = {
+            latitude: this.position[0] + up,
+            longitude: this.position[1] + right,
+        }
     }
 })

@@ -27,6 +27,7 @@ const checkPoint = () => {
   marathonStore.checkPoint(geoStore.position)
 }
 
+
 </script>
 
 <template>
@@ -65,6 +66,14 @@ const checkPoint = () => {
         <div v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt">
           <button class="button is-warning is-dark" @click="abort()">Abort</button>
         </div>
+
+        <div>
+          <button class="button" @click="geoStore.testChangeGeo(-0.0001, 0)">Down</button>
+          <button class="button" @click="geoStore.testChangeGeo(0.0001, 0)">Up</button>
+          <button class="button" @click="geoStore.testChangeGeo(0, -0.0001)">Left</button>
+          <button class="button" @click="geoStore.testChangeGeo(0, 0.0001)">Right</button>
+        </div>
+
         <div v-if="!marathonStore.current.startedAt">
           <button class="button" @click="decline()">Decline</button>
         </div>

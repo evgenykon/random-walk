@@ -6,7 +6,6 @@ const emit = defineEmits(['open'])
 
 <template>
   <div class="block p-2">
-    <h3 class="title">Random Marathon</h3>
 
     <marathon-card v-for="item in marathonStore.list"
                    :key="item.id"
