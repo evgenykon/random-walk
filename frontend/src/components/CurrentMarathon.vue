@@ -3,6 +3,11 @@ import { marathonStore } from '../store/marathon.js'
 import { geoStore } from '../store/geo.js'
 import MarathonOlMap from "./MarathonOlMap.vue";
 
+const emit = defineEmits(['decline'])
+const decline = () => {
+  emit('decline')
+  marathonStore.decline(marathonStore.current)
+}
 </script>
 
 <template>
@@ -31,7 +36,7 @@ import MarathonOlMap from "./MarathonOlMap.vue";
         <div>
           <button class="button is-primary is-dark">I am ready to Start!</button>
         </div>
-        <div><button class="button">Decline</button></div>
+        <div><button class="button" @click="decline()">Decline</button></div>
       </div>
     </div>
   </div>

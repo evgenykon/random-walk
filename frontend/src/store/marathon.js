@@ -1,6 +1,9 @@
 import { reactive } from 'vue'
 import { useStorage } from '@vueuse/core'
 
+function generateTargets(number, center, distance) {
+    return [];
+}
 
 export const marathonStore = reactive({
 
@@ -54,7 +57,7 @@ export const marathonStore = reactive({
         }
     },
 
-    new(form) {
+    new(form, center) {
         this.list.push({
             id: new Date().getTime(),
             title: `${form.distance.label} / ${form.points.label} / ${form.timeLimit.label}`,
@@ -65,6 +68,7 @@ export const marathonStore = reactive({
             startedAt: null,
             finishedAt: null,
             cancelledAt: null,
+            points: generateTargets(form.points.value, center, form.distance.value)
         })
         this.storage = this.list
     },
@@ -80,5 +84,14 @@ export const marathonStore = reactive({
         })
 
         this.storage = this.list
+    },
+
+    decline(item) {
+        this.current = null;
+        const index = this.list.indexOf(item)
+        if (index > -1) {
+            this.list.splice(this.list.indexOf(item), 1)
+            this.storage = this.list
+        }
     }
 })

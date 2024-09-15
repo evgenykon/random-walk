@@ -2,6 +2,7 @@
 import {ref, computed} from "vue";
 
 const emit = defineEmits(['create', 'cancel'])
+import { geoStore } from '../store/geo.js'
 
 import { marathonStore } from '../store/marathon.js'
 
@@ -14,7 +15,7 @@ const form = ref({
 
 const createNew = () => {
   emit('create')
-  marathonStore.new(form.value);
+  marathonStore.new(form.value, geoStore.position);
 }
 
 const name = computed(() => {
