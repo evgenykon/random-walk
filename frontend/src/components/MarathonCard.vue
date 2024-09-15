@@ -1,23 +1,27 @@
 <script setup>
-
+const {marathon,} = defineProps({
+  marathon: Object
+})
+const emit = defineEmits(['open'])
 </script>
 
 <template>
-  <a class="card box mb-3" href="#">
+  <a class="card box mb-3" href="#" @click="emit('open', marathon)">
     <div class="card-content">
       <div class="media">
         <div class="media-content">
-          <p class="title is-4">10 km / 10 points</p>
-          <p class="subtitle is-6">started 11 Sept, 2024 at 11:22</p>
+          <p class="title is-4">{{ marathon.title }}</p>
+          <p v-if="marathon.startedAt" class="subtitle is-6">{{ marathon.startedAt }}</p>
+          <p v-else class="subtitle is-6">Not started</p>
         </div>
       </div>
 
       <div class="content">
-        Running time <span class="tag is-dark">3 h</span>
+        Running time <span class="tag is-dark">0 h</span>
         <br />
-        Points taken <span class="tag is-dark">5 / 10</span>
+        Points taken <span class="tag is-dark">0 / 10</span>
         <br />
-        Current score <span class="tag is-warning">250</span>
+        Current score <span class="tag is-warning">0</span>
       </div>
     </div>
   </a>

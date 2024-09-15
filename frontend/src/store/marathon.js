@@ -67,5 +67,18 @@ export const marathonStore = reactive({
             cancelledAt: null,
         })
         this.storage = this.list
+    },
+
+    setCurrent(item) {
+        this.current = item
+
+        this.list = this.list.map(listItem => {
+            if (item.id === listItem.id) {
+                return item;
+            }
+            return listItem;
+        })
+
+        this.storage = this.list
     }
 })

@@ -9,6 +9,7 @@ import { notificationStore } from './store/notification.js'
 import AppNavbar from "./components/AppNavbar.vue";
 import MarathonData from "./components/MarathonData.vue";
 import NewMarathonForm from "./components/NewMarathonForm.vue";
+import CurrentMarathon from "./components/CurrentMarathon.vue";
 
 
 const isLoading = ref(false);
@@ -17,6 +18,13 @@ const showScreen = ref('home');
 onBeforeMount(() => {
   marathonStore.init();
 })
+
+const openMarathon = (item) => {
+  marathonStore.setCurrent(item);
+  showScreen.value = 'marathon'
+  console.log(item)
+}
+
 </script>
 
 
@@ -32,8 +40,8 @@ onBeforeMount(() => {
                        @cancel="showScreen = 'home'"
                        @create="showScreen = 'home'"
     />
-    <marathon-data v-if="showScreen === 'home'"></marathon-data>
-<!--    <div class="box">I'm in a box.</div>-->
+    <marathon-data v-if="showScreen === 'home'" @open="openMarathon"></marathon-data>
+    <current-marathon v-if="showScreen === 'marathon'" />
   </div>
 
 
