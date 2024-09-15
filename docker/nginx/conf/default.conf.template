@@ -1,0 +1,55 @@
+# docker/nginx/templates/default.conf.template
+
+# external HTTPS-requests to base domain
+server {
+    server_name health-check.yaizy.io;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    ssl_certificate /etc/nginx/certs/fullchain.cer;
+    ssl_certificate_key /etc/nginx/certs/health-check.yaizy.io.key;
+
+    root /var/www/html/public;
+    client_max_body_size 50m;
+    charset UTF-8;
+
+    index index.html;
+    access_log /dev/stdout;
+
+    location / {
+        access_log      /dev/stdout;
+        proxy_pass      http://panel:8080;
+        auth_basic      "Restricted area";
+        auth_basic_user_file /etc/nginx/allowed.users;
+    }
+
+    location /api {
+        access_log      /dev/stdout;
+        proxy_pass      http://panel-api:8088;
+        auth_basic      "Restricted area";
+        auth_basic_user_file /etc/nginx/allowed.users;
+    }
+}
+
+
+# redirects from HTTP to HTTPS
+server {
+    server_name health-check.yaizy.io;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    return 301 https://$host$request_uri;
+}
+
+# default HTTPS-server
+server {
+    listen      443 default_server ssl;
+    listen [::]:443 default_server ssl;
+
+    ssl_certificate /etc/nginx/certs/fullchain.cer;
+    ssl_certificate_key /etc/nginx/certs/health-check.yaizy.io.key;
+
+    server_name _;
+    return      444;
+
+    access_log /dev/stdout;
+}
