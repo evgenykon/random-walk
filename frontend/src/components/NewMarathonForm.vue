@@ -10,6 +10,7 @@ const form = ref({
   distance: {value: 3000, label: '3 km'},
   points: {value: 5, label: '5 points'},
   timeLimit: {value: 1, label: '1 h'},
+  isDebug: {value: false},
 });
 
 
@@ -62,10 +63,19 @@ const name = computed(() => {
           </div>
         </div>
       </div>
-
     </div>
 
 
+    <div class="block is-flex ">
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox"  v-model="form.isDebug"/>
+            Debug mode
+          </label>
+        </div>
+      </div>
+    </div>
 
     <div class="field is-grouped">
       <div class="control">

@@ -139,7 +139,8 @@ export const marathonStore = reactive({
             startedAt: null,
             finishedAt: null,
             cancelledAt: null,
-            targets: generateTargets(form.points.value, center, form.distance.value)
+            targets: generateTargets(form.points.value, center, form.distance.value),
+            isDebug: form.isDebug,
         })
         this.storage = this.list
     },
@@ -190,8 +191,10 @@ export const marathonStore = reactive({
             return;
         }
 
-        const smallCircle = new Circle(this.currentTarget.coords, 0.0003);
-        const largeCircle = new Circle(this.currentTarget.coords, 0.001);
+        const target = this.current.targets.find(target => target.isVisible && !target.takeAt);
+
+        const smallCircle = new Circle(target.coords, 0.0003);
+        const largeCircle = new Circle(target.coords, 0.001);
 
         const isIntersectSmall = smallCircle.intersectsCoordinate(geoPosition);
         const isIntersectLarge = largeCircle.intersectsCoordinate(geoPosition);
@@ -203,10 +206,11 @@ export const marathonStore = reactive({
         if (isIntersectSmall) {
             score += 150;
         }
-        this.currentTarget.takeAt = new Date().getTime();
-        this.currentTarget.score = score;
 
-        this.current.takenPoints.push(this.currentTarget)
+        target.score = score;
+        target.takeAt = new Date().getTime();
+
+        this.current.takenPoints.push(target)
 
         if (this.current.takenPoints.length >= this.current.targets.length) {
             return this.finishCurrent();

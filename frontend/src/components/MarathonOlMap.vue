@@ -7,6 +7,7 @@ const {position, initialZoom,} = defineProps({
   position: Array,
   initialZoom: Number,
   visibleTargets: Array,
+  isDebug: Boolean
 })
 
 
@@ -33,7 +34,6 @@ onBeforeMount(() => {
 
 <template>
 <div class="box">
-  {{ position }}
 
   <ol-map class="ol-map-container" :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true">
     <ol-view
