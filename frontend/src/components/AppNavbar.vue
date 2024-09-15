@@ -37,13 +37,13 @@ const menuExpanded = ref(false)
 
 
 
-    <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active': menuExpanded}">
-      <div class="navbar-start">
+    <div id="navbarBasicExample" class="navbar-menu mb-5" :class="{'is-active': menuExpanded}">
+      <div class="navbar-start mb-5">
         <a class="navbar-item">
-          Home
+          Start new Marathon
         </a>
         <a class="navbar-item">
-          Documentation
+          Summary
         </a>
       </div>
     </div>

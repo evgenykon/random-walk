@@ -6,6 +6,7 @@ import AppNotification from "./components/AppNotification.vue";
 
 import { notificationStore } from './store/notification.js'
 import AppNavbar from "./components/AppNavbar.vue";
+import MarathonData from "./components/MarathonData.vue";
 
 
 const isLoading = ref(false);
@@ -22,7 +23,7 @@ onMounted(() => {
   <div class="container">
     <app-navbar />
     <app-notification />
-    <page-loader v-if="isLoading" />
+    <marathon-data></marathon-data>
 <!--    <div class="box">I'm in a box.</div>-->
   </div>
 
