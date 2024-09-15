@@ -41,7 +41,7 @@ const openMarathon = (item) => {
                        @create="showScreen = 'home'"
     />
     <marathon-data v-if="showScreen === 'home'" @open="openMarathon"></marathon-data>
-    <current-marathon v-if="showScreen === 'marathon'" @decline="showScreen = 'home'" />
+    <current-marathon v-if="showScreen === 'marathon'" @home="showScreen = 'home'" />
   </div>
 
 

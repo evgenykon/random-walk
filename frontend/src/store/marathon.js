@@ -1,8 +1,71 @@
 import { reactive } from 'vue'
 import { useStorage } from '@vueuse/core'
+import LineString from 'ol/geom/LineString.js'
+
+class TargetCoords {
+    lat
+    long
+    constructor(lat, long) {
+        this.lat = lat;
+        this.long = long;
+    }
+}
+
+class Target {
+    id
+    coords
+    isVisible
+    takeAt
+    score
+}
 
 function generateTargets(number, center, distance) {
-    return [];
+
+    function getDistance(point1, point2){
+        const line = new LineString([point1, point2]);
+        return Math.round(line.getLength() * 100) / 100;
+    }
+
+    /**
+     * @param basePoint {TargetCoords}
+     * @param rotation {number}
+     * @param distance {number} in meters
+     * @returns {Array<import("../coordinate.js").Coordinate>}
+     */
+    function makeNewPoint(basePoint, rotation, distance) {
+        // 1deg = 111,111 meters
+        // x = distance
+        // 56 lat, 37 long
+        const distInDeg = distance / 111.111;
+        console.log('distInDeg', distance, distInDeg)
+        const point1 = [.0, .0];
+        const point2 = [distInDeg, .0];
+
+        const line = new LineString([point1, point2]);
+        console.log('line1', line.getLastCoordinate())
+        line.translate(basePoint.lat, basePoint.long)
+        line.rotate(rotation, [basePoint.lat, basePoint.long,]);
+        return line.getLastCoordinate();
+    }
+
+    function degreesToRadians(degrees)
+    {
+        // Multiply degrees by pi divided by 180 to convert to radians.
+        return degrees * (Math.PI/180);
+    }
+
+    let targets = [];
+    let lastPoint = new TargetCoords(center[0], center[1]);
+    const distanceInterval = distance / number / 1000;
+    let rotation = 0;
+    const rotationInterval = degreesToRadians(360 / number);
+    for (let i = 0; i < number; i++) {
+        const newCoords = makeNewPoint(lastPoint, rotation, distanceInterval);
+        lastPoint = new TargetCoords(newCoords[0], newCoords[1]);
+        targets.push({ id: Math.random(), coords: newCoords, isVisible: true, takeAt: null, score: 0 });
+        rotation += rotationInterval;
+    }
+    return targets;
 }
 
 export const marathonStore = reactive({
@@ -43,6 +106,13 @@ export const marathonStore = reactive({
         {value: 24, label: '24 h'},
     ],
 
+    get visibleTargets () {
+        if (!this.current) {
+            return [];
+        }
+        return this.current.targets.filter(target => target.isVisible);
+    },
+
     init() {
         this.storage = useStorage('marathon', [])
 
@@ -68,7 +138,7 @@ export const marathonStore = reactive({
             startedAt: null,
             finishedAt: null,
             cancelledAt: null,
-            points: generateTargets(form.points.value, center, form.distance.value)
+            targets: generateTargets(form.points.value, center, form.distance.value)
         })
         this.storage = this.list
     },
@@ -93,5 +163,24 @@ export const marathonStore = reactive({
             this.list.splice(this.list.indexOf(item), 1)
             this.storage = this.list
         }
-    }
+    },
+
+    startCurrent() {
+        this.current.startedAt = new Date().getTime();
+        this.showNextTarget()
+    },
+
+    abortCurrent() {
+        this.current.cancelledAt = new Date().getTime();
+    },
+
+    finishCurrent() {
+        this.current.finishedAt = new Date().getTime();
+    },
+
+    showNextTarget() {
+        if (this.current.targets.length === 0) {
+            return this.finishCurrent();
+        }
+    },
 })

@@ -2,9 +2,11 @@
 import {ref, onMounted, onBeforeMount, computed} from "vue";
 import * as olProj from 'ol/proj';
 import User from "./map/User.vue";
+import Target from "./map/Target.vue";
 const {position, initialZoom,} = defineProps({
   position: Array,
   initialZoom: Number,
+  visibleTargets: Array,
 })
 
 
@@ -31,6 +33,7 @@ onBeforeMount(() => {
 
 <template>
 <div class="box">
+
   <ol-map class="ol-map-container" :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true">
     <ol-view
         ref="view"
@@ -48,6 +51,8 @@ onBeforeMount(() => {
       <ol-style>
         <ol-source-vector>
           <user v-if="position" :position="position" />
+
+          <target v-for="visibleTarget of visibleTargets" :key="visibleTarget.id" :position="visibleTarget.coords" />
         </ol-source-vector>
       </ol-style>
     </ol-vector-layer>
