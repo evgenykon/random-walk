@@ -52,7 +52,10 @@ onBeforeMount(() => {
         <ol-source-vector>
           <user v-if="position" :position="position" />
 
-          <target v-for="visibleTarget of visibleTargets" :key="visibleTarget.id" :position="visibleTarget.coords" />
+          <target v-for="visibleTarget of visibleTargets" :key="visibleTarget.id"
+                  :position="visibleTarget.coords"
+                  :number="visibleTarget.order"
+          />
         </ol-source-vector>
       </ol-style>
     </ol-vector-layer>
