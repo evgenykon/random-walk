@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 import { useStorage } from '@vueuse/core'
 import LineString from 'ol/geom/LineString.js'
+import Circle from 'ol/geom/Circle.js'
 
 class TargetCoords {
     lat
@@ -21,11 +22,6 @@ class Target {
 }
 
 function generateTargets(number, center, distance) {
-
-    function getDistance(point1, point2){
-        const line = new LineString([point1, point2]);
-        return Math.round(line.getLength() * 100) / 100;
-    }
 
     /**
      * @param basePoint {TargetCoords}
@@ -114,6 +110,10 @@ export const marathonStore = reactive({
         return this.current.targets.filter(target => target.isVisible);
     },
 
+    get currentTarget() {
+        return this.current.targets.filter(target => target.isVisible && !target.takeAt)[0] ?? null;
+    },
+
     init() {
         this.storage = useStorage('marathon', [])
 
@@ -184,4 +184,26 @@ export const marathonStore = reactive({
             return this.finishCurrent();
         }
     },
+
+    checkPoint(geoPosition) {
+        if (!this.currentTarget) {
+            return;
+        }
+
+        const smallCircle = new Circle(this.currentTarget.coords, 0.0003);
+        const largeCircle = new Circle(this.currentTarget.coords, 0.001);
+
+        const isIntersectSmall = smallCircle.intersectsCoordinate(geoPosition);
+        const isIntersectLarge = largeCircle.intersectsCoordinate(geoPosition);
+
+        let score = 0;
+        if (isIntersectLarge) {
+            score += 100;
+        }
+        if (isIntersectSmall) {
+            score += 150;
+        }
+        this.currentTarget.takeAt = new Date().getTime();
+        this.currentTarget.score = score;
+    }
 })

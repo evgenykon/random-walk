@@ -5,7 +5,8 @@ import * as olProj from "ol/proj.js";
 
 const {position, } = defineProps({
   position: Array,
-  number: String
+  number: Number,
+  isTaken: Boolean,
 })
 const convertedPosition = computed(() => {
   const posValues = position.map(item => item)
@@ -18,11 +19,11 @@ const convertedPosition = computed(() => {
     <ol-geom-point :coordinates="convertedPosition"></ol-geom-point>
     <ol-geom-circle :center="convertedPosition" :radius="50"></ol-geom-circle>
     <ol-style>
-      <ol-style-stroke color="red" :width="3"></ol-style-stroke>
+      <ol-style-stroke :color="isTaken ? `green` : `red`" :width="3"></ol-style-stroke>
       <ol-style-fill color="rgba(255,200,0,0.2)"></ol-style-fill>
     </ol-style>
   </ol-feature>
-  <ol-feature v-if="convertedPosition">
+  <ol-feature v-if="convertedPosition && !isTaken">
     <ol-geom-point :coordinates="convertedPosition"></ol-geom-point>
     <ol-geom-circle :center="convertedPosition" :radius="150"></ol-geom-circle>
     <ol-style>
