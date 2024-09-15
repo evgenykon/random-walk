@@ -27,7 +27,7 @@ const decline = () => {
 
       <div class="content is-flex is-justify-content-space-between">
         <marathon-ol-map class="marathon-map"
-                         :initial-center="geoStore.position"
+                         :position="geoStore.position"
                          :initial-zoom="15"
         />
       </div>
