@@ -2,11 +2,16 @@
 import {onMounted, ref} from 'vue'
 import GeolocationSetup from "./GeolocationSetup.vue";
 import PageLoader from "./PageLoader.vue";
+const emit = defineEmits(['new-marathon', 'home'])
 
 import { geoStore } from '../store/geo.js'
 
-
 const menuExpanded = ref(false)
+
+const selectMenuItem = (item) => {
+  emit(item)
+  menuExpanded.value = false
+}
 </script>
 
 <template>
@@ -15,7 +20,7 @@ const menuExpanded = ref(false)
 
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="/">
+      <a class="navbar-item" href="#" @click="selectMenuItem('home')">
         <img src="../assets/vue.svg">
       </a>
 
@@ -39,8 +44,8 @@ const menuExpanded = ref(false)
 
     <div id="navbarBasicExample" class="navbar-menu mb-5" :class="{'is-active': menuExpanded}">
       <div class="navbar-start mb-5">
-        <a class="navbar-item">
-          Start new Marathon
+        <a class="navbar-item" @click="selectMenuItem('new-marathon')">
+          Create new Marathon
         </a>
         <a class="navbar-item">
           Summary
