@@ -13,6 +13,7 @@ class TargetCoords {
 
 class Target {
     id
+    order
     coords
     isVisible
     takeAt
@@ -48,22 +49,22 @@ function generateTargets(number, center, distance) {
         return line.getLastCoordinate();
     }
 
-    function degreesToRadians(degrees)
-    {
+    function degreesToRadians(degrees) {
         // Multiply degrees by pi divided by 180 to convert to radians.
         return degrees * (Math.PI/180);
     }
 
+    function getRandomRotation () {
+        return degreesToRadians(Math.floor(Math.random() * 360));
+    }
+
     let targets = [];
     let lastPoint = new TargetCoords(center[0], center[1]);
-    const distanceInterval = distance / number / 1000;
-    let rotation = 0;
-    const rotationInterval = degreesToRadians(360 / number);
+    const distanceInterval = distance / (number - 1) / 1000;
     for (let i = 0; i < number; i++) {
-        const newCoords = makeNewPoint(lastPoint, rotation, distanceInterval);
+        const newCoords = makeNewPoint(lastPoint, getRandomRotation(), distanceInterval);
         lastPoint = new TargetCoords(newCoords[0], newCoords[1]);
-        targets.push({ id: Math.random(), coords: newCoords, isVisible: true, takeAt: null, score: 0 });
-        rotation += rotationInterval;
+        targets.push({ id: Math.random(), order: i, coords: newCoords, isVisible: true, takeAt: null, score: 0 });
     }
     return targets;
 }
