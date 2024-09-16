@@ -72,6 +72,7 @@ export const marathonStore = reactive({
     current: null,
 
     distances: [
+        {value: 1000, label: '1 km'},
         {value: 3000, label: '3 km'},
         {value: 5000, label: '5 km'},
         {value: 10000, label: '10 km'},
@@ -187,6 +188,37 @@ export const marathonStore = reactive({
         }
     },
 
+    checkIntersectionScore(geoPosition) {
+        if (!this.currentTarget) {
+            return 0;
+        }
+        const target = this.current.targets.find(target => target.isVisible && !target.takeAt);
+
+        const smallCircle = new Circle(target.coords, 0.0003);
+        const largeCircle = new Circle(target.coords, 0.001);
+
+        const isIntersectSmall = smallCircle.intersectsCoordinate(geoPosition);
+        const isIntersectLarge = largeCircle.intersectsCoordinate(geoPosition);
+
+        if (isIntersectSmall) {
+            return this.scoreForSmallCircleReach;
+        }
+
+        if (isIntersectLarge) {
+            return this.scoreForLargeCirceReach;
+        }
+
+        return 0;
+    },
+
+    get scoreForLargeCirceReach() {
+        return 100;
+    },
+
+    get scoreForSmallCircleReach() {
+        return 250;
+    },
+
     checkPoint(geoPosition) {
         if (!this.currentTarget) {
             return;
@@ -202,10 +234,10 @@ export const marathonStore = reactive({
 
         let score = 0;
         if (isIntersectLarge) {
-            score += 100;
+            score = this.scoreForLargeCirceReach;
         }
         if (isIntersectSmall) {
-            score += 150;
+            score = this.scoreForSmallCircleReach;
         }
 
         target.score = score;

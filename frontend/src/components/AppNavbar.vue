@@ -18,7 +18,7 @@ const selectMenuItem = (item) => {
 
 
 
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="app-navbar navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="#" @click="selectMenuItem('home')">
         <img src="../assets/vue.svg">
@@ -42,9 +42,9 @@ const selectMenuItem = (item) => {
 
 
 
-    <div id="navbarBasicExample" class="navbar-menu mb-5" :class="{'is-active': menuExpanded}">
-      <div class="navbar-start mb-5">
-        <a class="navbar-item" @click="selectMenuItem('new-marathon')">
+    <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active': menuExpanded}">
+      <div class="navbar-start">
+        <a v-if="geoStore.position" class="navbar-item" @click="selectMenuItem('new-marathon')">
           Create new Marathon
         </a>
         <a class="navbar-item">
@@ -56,7 +56,10 @@ const selectMenuItem = (item) => {
 </template>
 
 <style scoped lang="scss">
-#navbarBasicExample {
-  height: 100vh;
+.app-navbar {
+  height: 52px;
+  .navbar-menu.is-active {
+    height: calc(100vh - 52px);
+  }
 }
 </style>

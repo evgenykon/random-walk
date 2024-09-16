@@ -2,7 +2,7 @@
 import { marathonStore } from '../store/marathon.js'
 import { geoStore } from '../store/geo.js'
 import MarathonOlMap from "./MarathonOlMap.vue";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 
 const emit = defineEmits(['home', 'start'])
 const decline = () => {
@@ -17,19 +17,37 @@ const startMarathon = () => {
 
 const abort = () => {
   marathonStore.abortCurrent()
-  goHome()
 }
 
 const goHome = () => {
   emit('home')
 }
 
+const isShowNotIntersectedConfirmation = ref(false);
+const notIntersectedWarningText = ref('');
+const isShowFinalModal = ref(false);
+
 const checkPoint = () => {
-  marathonStore.checkPoint(geoStore.position)
+  const score = marathonStore.checkIntersectionScore(geoStore.position);
+  if (score > 0) {
+    if (score < marathonStore.scoreForSmallCircleReach) {
+      notIntersectedWarningText.value = `You have not reached the center of the zone. The reward will be ${score} points. Confirm checkpoint?`;
+      isShowNotIntersectedConfirmation.value = true;
+    } else {
+      confirmCheckPoint()
+    }
+  } else {
+    isShowNotIntersectedConfirmation.value = true;
+    notIntersectedWarningText.value = `You have not reached the checkpoint area. If you confirm the action, the achievement will not be counted.`;
+  }
 }
 
-const finish = () => {
-  marathonStore.finishCurrent()
+const confirmCheckPoint = () => {
+  marathonStore.checkPoint(geoStore.position);
+  isShowNotIntersectedConfirmation.value = false;
+  if (marathonStore.current?.finishedAt) {
+    isShowFinalModal.value = true
+  }
 }
 
 const currentScore = computed(() => {
@@ -58,6 +76,45 @@ const canFinished = computed(() => {
 </script>
 
 <template>
+
+  <!-- Confirm checkpoint modal -->
+  <div class="modal" :class="{'is-active': isShowNotIntersectedConfirmation}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Checkpoint score warning</p>
+      </header>
+      <section class="modal-card-body">
+        {{notIntersectedWarningText}}
+      </section>
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button class="button is-warning" @click="confirmCheckPoint()">Confirm</button>
+          <button class="button" @click="isShowNotIntersectedConfirmation = false;">Cancel</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Final modal -->
+  <div class="modal" :class="{'is-active': isShowFinalModal}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">The marathon is over!</p>
+      </header>
+      <section class="modal-card-body">
+        <span class="has-text-warning	">Congratulations! You have completed the current challenge!</span>
+      </section>
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button class="button is-primary" @click="isShowFinalModal = false;">Done</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+
   <div v-if="marathonStore.current?.id" class="current-marathon card box">
     <div class="card-content">
 
@@ -92,28 +149,30 @@ const canFinished = computed(() => {
 
       <div class="content map-wrapper">
         <marathon-ol-map class="marathon-map"
+                         :class="{'geotools': marathonStore.current.isDebug}"
                          :position="geoStore.position"
                          :initial-zoom="15"
                          :visible-targets="marathonStore.visibleTargets"
                          :is-debug="marathonStore.current.isDebug"
         />
-      </div>
-
-      <div class="content is-flex is-justify-content-space-between">
-          <button v-if="!marathonStore.current.startedAt" class="button is-primary is-dark" @click="startMarathon()">I am ready to Start!</button>
-
-          <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
-                  class="button is-primary is-dark" @click="checkPoint()">Checkpoint</button>
-
-          <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
-                  class="button is-warning is-dark" @click="abort()">Abort</button>
-
         <div v-if="marathonStore.current.isDebug">
           <button class="button" @click="geoStore.testChangeGeo(-0.0001, 0)">Down</button>
           <button class="button" @click="geoStore.testChangeGeo(0.0001, 0)">Up</button>
           <button class="button" @click="geoStore.testChangeGeo(0, -0.0001)">Left</button>
           <button class="button" @click="geoStore.testChangeGeo(0, 0.0001)">Right</button>
         </div>
+      </div>
+
+      <div class="content action-bar">
+        <button v-if="!marathonStore.current.startedAt" class="button is-primary is-dark" @click="startMarathon()">I am ready to Start!</button>
+
+        <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
+                class="button is-primary is-dark" @click="checkPoint()">Checkpoint</button>
+
+        <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
+                class="button is-warning is-dark" @click="abort()">Abort</button>
+
+
 
         <button v-if="!marathonStore.current.startedAt" class="button" @click="decline()">Decline</button>
 
@@ -133,6 +192,7 @@ $breakpoint: 1280px;
 .current-marathon.card.box {
   margin: 0;
   padding: 0;
+  height: calc(100vh - 52px);
   .stat-line {
     display: flex;
     flex-wrap: nowrap;
@@ -151,30 +211,49 @@ $breakpoint: 1280px;
       color: #00ff00;
     }
   }
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .action-bar {
+      margin-top: auto;
+    }
+  }
 
   @include mixins.until(550px) {
     .card-content {
       padding: 5px;
-    }
-    .marathon-name {
-      margin-bottom: 5px;
-      .title {
-        font-size: 14px;
+      .marathon-name {
+        margin-bottom: 5px;
+        .title {
+          font-size: 14px;
+        }
       }
-    }
-    .debug-tag {
-      display: none;
-    }
-    .stat-line {
-      .label {
-        font-size: 10px;
+      .debug-tag {
+        display: none;
       }
-    }
-    .map-wrapper {
-      padding: 0;
-    }
-    button.button {
-
+      .stat-line {
+        .label {
+          font-size: 10px;
+        }
+      }
+      .map-wrapper {
+        padding: 0;
+        .marathon-map {
+          height: calc(100vh - 200px);
+          &.geotools {
+            height: calc(100vh - 255px);
+          }
+        }
+      }
+      .action-bar {
+        margin-top: auto;
+        height: 6vh;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8vw;
+      }
     }
   }
 
