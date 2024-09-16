@@ -22,6 +22,10 @@ const createNew = () => {
 const name = computed(() => {
   return `${form.value.distance.label} / ${form.value.points.label} / ${form.value.timeLimit.label}`;
 })
+
+const scoreCalculation = computed(() => {
+  return marathonStore.calculateScore(form.value.distance.value, form.value.points.value, form.value.timeLimit.value);
+})
 </script>
 
 <template>
@@ -63,6 +67,12 @@ const name = computed(() => {
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="block">
+      <div>Points for target rich: <span class="tag is-dark">{{ scoreCalculation.perTargetRich }}</span></div>
+      <div>Points for target center: <span class="tag is-dark">{{ scoreCalculation.perTargetCenter }}</span></div>
+      <div>Maximum points for challenge: <span class="tag is-dark">{{ scoreCalculation.maximumForChallenge }}</span></div>
     </div>
 
 

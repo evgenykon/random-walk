@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import {computed, reactive} from 'vue'
 import { useStorage } from '@vueuse/core'
 import LineString from 'ol/geom/LineString.js'
 import Circle from 'ol/geom/Circle.js'
@@ -248,5 +248,39 @@ export const marathonStore = reactive({
         if (this.current.takenPoints.length >= this.current.targets.length) {
             return this.finishCurrent();
         }
+    },
+
+    /**
+     * @param distance
+     * @param points
+     * @param timeLimit
+     * @returns {{perTargetRich: number, perTargetCenter: number, maximumForChallenge: number}}
+     */
+    calculateScore(distance, points, timeLimit) {
+        return {
+            perTargetRich: 100,
+            perTargetCenter: 250,
+            maximumForChallenge: 500,
+        }
+    },
+
+    get currentStatus() {
+        return this.getStatus(this.current)
+    },
+
+    getStatus(marathon) {
+        if (!marathon.startedAt) {
+            return 'Not started';
+        }
+        if (marathon.startedAt && !marathon.cancelledAt && !marathon.finishedAt) {
+            return 'Running';
+        }
+        if (marathon.cancelledAt) {
+            return 'Cancelled';
+        }
+        if (marathon.finishedAt) {
+            return 'Finished';
+        }
+        return '-'
     }
 })

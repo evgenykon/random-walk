@@ -2,9 +2,26 @@
 import { marathonStore } from '../store/marathon.js'
 import { geoStore } from '../store/geo.js'
 import MarathonOlMap from "./MarathonOlMap.vue";
-import {computed, ref} from "vue";
+import {computed, ref, onMounted, onUnmounted} from "vue";
+import moment from "moment/moment.js";
+
+const timer = ref(null);
+const isShowNotIntersectedConfirmation = ref(false);
+const notIntersectedWarningText = ref('');
+const isShowFinalModal = ref(false);
 
 const emit = defineEmits(['home', 'start'])
+
+// onMounted(() => {
+//   timer.value = setInterval(() => {
+//
+//   }, 1000)
+// })
+//
+// onUnmounted(() => {
+//   clearInterval(timer.value)
+// })
+
 const decline = () => {
   marathonStore.decline(marathonStore.current)
   goHome()
@@ -23,9 +40,6 @@ const goHome = () => {
   emit('home')
 }
 
-const isShowNotIntersectedConfirmation = ref(false);
-const notIntersectedWarningText = ref('');
-const isShowFinalModal = ref(false);
 
 const checkPoint = () => {
   const score = marathonStore.checkIntersectionScore(geoStore.position);
@@ -54,24 +68,12 @@ const currentScore = computed(() => {
   return marathonStore.current?.takenPoints?.reduce((sum, item) => sum + item.score, 0) ?? 0
 })
 
-const currentStatus = computed(() => {
-  if (!marathonStore.current.startedAt) {
-    return 'Not started';
-  }
-  if (marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt) {
-    return 'Running';
-  }
-  if (marathonStore.current.cancelledAt) {
-    return 'Cancelled';
-  }
-  if (marathonStore.current.finishedAt) {
-    return 'Finished';
-  }
-  return '-'
-})
-
-const canFinished = computed(() => {
-  return marathonStore.current?.takenPoints.length === marathonStore.current?.targets.length
+const runningTime = computed(() => {
+  const zeroPad = (num, places) => String(num).padStart(places, '0')
+  const startedAt = moment(marathonStore.current.startedAt);
+  const finishedAt = marathonStore.current.finishedAt ? moment(marathonStore.current.finishedAt) : moment();
+  const duration = moment.duration(finishedAt.diff(startedAt))
+  return duration.hours() + ":" + zeroPad(duration.minutes(), 2) + ":" + zeroPad(duration.seconds(), 2);
 })
 </script>
 
@@ -127,7 +129,7 @@ const canFinished = computed(() => {
       <div class="stat-line content">
         <div class="cell">
           <span class="label">Running time</span>
-          <span class="tag is-dark">0 h</span>
+          <span class="tag is-dark">{{ runningTime }}</span>
         </div>
 
         <div class="cell">
@@ -142,7 +144,7 @@ const canFinished = computed(() => {
 
         <div class="cell">
           <span class="label">Status</span>
-          <span class="tag is-dark status" :class="currentStatus.toLowerCase()">{{ currentStatus }}</span>
+          <span class="tag is-dark status" :class="marathonStore.currentStatus.toLowerCase()">{{ marathonStore.currentStatus }}</span>
         </div>
 
       </div>
@@ -187,7 +189,6 @@ const canFinished = computed(() => {
 
 <style lang="scss">
 @use "bulma/sass/utilities/mixins";
-$breakpoint: 1280px;
 
 .current-marathon.card.box {
   margin: 0;
@@ -219,6 +220,14 @@ $breakpoint: 1280px;
       margin-top: auto;
     }
   }
+  .action-bar {
+    margin-top: auto;
+    height: 3vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8vw;
+  }
 
   @include mixins.until(550px) {
     .card-content {
@@ -247,12 +256,7 @@ $breakpoint: 1280px;
         }
       }
       .action-bar {
-        margin-top: auto;
         height: 6vh;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.8vw;
       }
     }
   }
