@@ -1,13 +1,5 @@
 services:
-
-#  redis:
-#    image: redis:latest
-#    restart: 'always'
-#    healthcheck :
-#      test : echo 'INFO keyspace' | redis-cli
-#      interval : 60s
-#      retries : 5
-
+  
   node:
     image: node:22
     restart: 'always'
@@ -17,58 +9,6 @@ services:
     ports:
       - 8080:8080
     command: "npm run dev"
-
-#  deno :
-#    build:
-#      context: ./
-#      dockerfile: ./docker/deno/Dockerfile
-#    restart : 'no'
-#    working_dir : /home/node/app
-#    volumes :
-#      - .:/home/node/app
-#    command : bash -c "exit 0"
-
-#  panel:
-#    build:
-#      context: ./
-#      shm_size : 2gb
-#      dockerfile: ./docker/deno/Dockerfile
-#    env_file: ./panel/.env
-#    restart: 'always'
-#    working_dir: /home/node/app
-#    volumes:
-#      - ./panel:/home/node/app
-#    depends_on:
-#      - deno
-#    command: bash -c "deno task start"
-  #    ports:
-  #      - "8080:8080"
-
-#  panel-api:
-#    build:
-#      context: ./
-#      shm_size: 2gb
-#      dockerfile: ./docker/deno/Dockerfile
-#    restart: 'always'
-#    working_dir: /home/node/app
-#    env_file: ./panel/.env
-#    volumes:
-#      - ./panel:/home/node/app
-#    depends_on:
-#      - deno
-#    command: bash -c "deno task start-api"
-#  #    ports:
-#  #      - "8088:8088"
-
-#  nginx-prod:
-#    image: nginx:latest
-#    restart: 'always'
-#    volumes:
-#      - /root/.acme.sh/health-check.yaizy.io_ecc/:/etc/nginx/certs
-#      - ./docker/nginx/conf/default.conf.template:/etc/nginx/templates/default.conf.template
-#      - ./docker/nginx/conf/allowed.users.prod:/etc/nginx/allowed.users
-#    ports:
-#      - "443:443"
 
   nginx:
     image: nginx:latest
