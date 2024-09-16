@@ -222,7 +222,7 @@ const runningTime = computed(() => {
   }
   .action-bar {
     margin-top: auto;
-    height: 3vh;
+    height: 6vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -254,9 +254,6 @@ const runningTime = computed(() => {
             height: calc(100vh - 255px);
           }
         }
-      }
-      .action-bar {
-        height: 6vh;
       }
     }
   }

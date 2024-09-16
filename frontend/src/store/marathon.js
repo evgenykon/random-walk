@@ -257,10 +257,21 @@ export const marathonStore = reactive({
      * @returns {{perTargetRich: number, perTargetCenter: number, maximumForChallenge: number}}
      */
     calculateScore(distance, points, timeLimit) {
+        // 3000 : 5 : 1h : center = 3000 / 5 = 600 / (10 * 1) = 60 per 1 point
+        // 3000 : 5 : 1h : rich = 3000 / 5 / (12 * 1) = 50 per 1 point
+
+        // 10000 : 5 : 1h : center = 10000 / 5 / (10 * 1) = 200 per 1 point
+        // 10000 : 5 : 1h : rich = 10000 / 5 / (12 * 1) = 167 per 1 point
+
+        // 10000 : 5 : 5h : center = 10000 / 5 / (10 * 5) = 40 per 1 point
+        // 10000 : 5 : 5h : rich = 10000 / 5 / (12 * 5) = 34 per 1 point
+
+        const maxPointPerTarget = Math.floor(distance / points / (timeLimit * 10));
+
         return {
-            perTargetRich: 100,
-            perTargetCenter: 250,
-            maximumForChallenge: 500,
+            perTargetRich: Math.floor(distance / points / (timeLimit * 12)),
+            perTargetCenter: maxPointPerTarget,
+            maximumForChallenge: maxPointPerTarget * points,
         }
     },
 
