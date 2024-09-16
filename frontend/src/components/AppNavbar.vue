@@ -5,6 +5,7 @@ import PageLoader from "./PageLoader.vue";
 const emit = defineEmits(['new-marathon', 'home'])
 
 import { geoStore } from '../store/geo.js'
+import {marathonStore} from "../store/marathon.js";
 
 const menuExpanded = ref(false)
 
@@ -26,7 +27,11 @@ const selectMenuItem = (item) => {
 
       <a class="navbar-item" href="#">
         <geolocation-setup />
-        {{ geoStore.position }}
+        {{ geoStore.position?.map(item => Math.round(item * 10000) / 10000) }}
+      </a>
+
+      <a class="navbar-item" href="#">
+        Scores: <strong class="tag is-warning">{{ marathonStore.scoreBalance }}</strong>
       </a>
 
       <a :class="{'is-active': menuExpanded}"
@@ -47,9 +52,9 @@ const selectMenuItem = (item) => {
         <a v-if="geoStore.position" class="navbar-item" @click="selectMenuItem('new-marathon')">
           Create new Marathon
         </a>
-        <a class="navbar-item">
+        <!-- a class="navbar-item">
           Summary
-        </a>
+        </a -->
       </div>
     </div>
   </nav>

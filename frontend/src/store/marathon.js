@@ -58,7 +58,7 @@ function generateTargets(number, center, distance, isAllVisible) {
     for (let i = 0; i < number; i++) {
         const newCoords = makeNewPoint(lastPoint, getRandomRotation(), distanceInterval);
         lastPoint = new TargetCoords(newCoords[0], newCoords[1]);
-        targets.push({ id: Math.random(), order: i, coords: newCoords, isVisible: isAllVisible ? true : (i === 0), takeAt: null, score: 0 });
+        targets.push({ id: Math.random(), order: i, coords: newCoords, isVisible: isAllVisible, takeAt: null, score: 0 });
     }
     return targets;
 }
@@ -68,6 +68,9 @@ export const marathonStore = reactive({
     storage: null,
     list: [],
     current: null,
+
+    scoreStorage: null,
+    scoreBalance: 0,
 
     distances: [
         {value: 1000, label: '1 km'},
@@ -115,20 +118,27 @@ export const marathonStore = reactive({
 
     init() {
         this.storage = useStorage('marathon', [])
+        this.scoreStorage = useStorage('scores', 0)
 
         try {
             const storageList = this.storage
             if (storageList.length) {
                 this.list = storageList;
             }
+
+            const score = this.scoreStorage
+            if (score) {
+                this.scoreBalance = score
+            }
+
             console.log('Marathon store inited', storageList )
         } catch (e) {
-
+            console.error(e)
         }
+
     },
 
     new(form, center) {
-        console.log('new', form)
         this.list.push({
             id: new Date().getTime(),
             title: `${form.distance.label} / ${form.points.label} / ${form.timeLimit.label}`,
@@ -170,21 +180,20 @@ export const marathonStore = reactive({
 
     startCurrent() {
         this.current.startedAt = new Date().getTime();
-        this.showNextTarget()
+        this.makeNextTargetVisible()
     },
 
     abortCurrent() {
         this.current.cancelledAt = new Date().getTime();
     },
 
-    finishCurrent() {
-        this.current.finishedAt = new Date().getTime();
+    get currentScore () {
+        return this.current?.takenPoints?.reduce((sum, item) => sum + item.score, 0) ?? 0
     },
 
-    showNextTarget() {
-        if (this.current.targets.length === 0) {
-            return this.finishCurrent();
-        }
+    finishCurrent() {
+        this.upBalance(this.currentScore)
+        this.current.finishedAt = new Date().getTime();
     },
 
     checkIntersectionScore(geoPosition) {
@@ -261,7 +270,9 @@ export const marathonStore = reactive({
 
     makeNextTargetVisible() {
         const target = this.current.targets.find(target => !target.isVisible && !target.takeAt);
-        target.isVisible = true;
+        if (target) {
+            target.isVisible = true;
+        }
     },
 
     /**
@@ -307,5 +318,9 @@ export const marathonStore = reactive({
             return 'Finished';
         }
         return '-'
+    },
+
+    upBalance(value) {
+        this.scoreBalance += value
     }
 })

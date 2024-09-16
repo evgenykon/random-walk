@@ -64,11 +64,10 @@ const confirmCheckPoint = () => {
   }
 }
 
-const currentScore = computed(() => {
-  return marathonStore.current?.takenPoints?.reduce((sum, item) => sum + item.score, 0) ?? 0
-})
-
 const runningTime = computed(() => {
+  if (!marathonStore.current.startedAt) {
+    return '0:00:00';
+  }
   const zeroPad = (num, places) => String(num).padStart(places, '0')
   const startedAt = moment(marathonStore.current.startedAt);
   const finishedAt = marathonStore.current.finishedAt ? moment(marathonStore.current.finishedAt) : moment();
@@ -107,7 +106,7 @@ const runningTime = computed(() => {
       </header>
       <section class="modal-card-body">
         <div> <span class="has-text-warning	">Congratulations! You have completed the current challenge!</span></div>
-        <div>You won <span class="is-size-1 has-text-warning">1000</span> points!</div>
+        <div>You won <span class="is-size-1 has-text-warning">{{ marathonStore.currentScore }}</span> points!</div>
       </section>
       <footer class="modal-card-foot">
         <div class="buttons">
@@ -140,7 +139,7 @@ const runningTime = computed(() => {
 
         <div class="cell">
           <span class="label">Current score</span>
-          <span class="tag is-dark">{{ currentScore }}</span>
+          <span class="tag is-dark">{{ marathonStore.currentScore }}</span>
         </div>
 
         <div class="cell">
@@ -181,7 +180,7 @@ const runningTime = computed(() => {
 
         <button v-if="!marathonStore.current.cancelledAt || !marathonStore.current.finishedAt" class="button" @click="goHome()">Go to list</button>
 
-        <button v-if="marathonStore.current.cancelledAt || marathonStore.current.finishedAt" class="button" @click="decline()">Delete</button>
+        <button v-if="marathonStore.current.cancelledAt || marathonStore.current.finishedAt" class="button is-warning" @click="decline()">Delete</button>
 
       </div>
     </div>

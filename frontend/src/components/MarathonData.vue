@@ -7,7 +7,7 @@ const emit = defineEmits(['open'])
 <template>
   <div class="block p-2">
 
-    <marathon-card v-for="item in marathonStore.list"
+    <marathon-card v-for="item in marathonStore.list.reverse()"
                    :key="item.id"
                    :marathon="item"
                    @open="(item) => emit('open', item)"
