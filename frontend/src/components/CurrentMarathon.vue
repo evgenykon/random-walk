@@ -106,7 +106,8 @@ const runningTime = computed(() => {
         <p class="modal-card-title">The marathon is over!</p>
       </header>
       <section class="modal-card-body">
-        <span class="has-text-warning	">Congratulations! You have completed the current challenge!</span>
+        <div> <span class="has-text-warning	">Congratulations! You have completed the current challenge!</span></div>
+        <div>You won <span class="is-size-1 has-text-warning">1000</span> points!</div>
       </section>
       <footer class="modal-card-foot">
         <div class="buttons">
