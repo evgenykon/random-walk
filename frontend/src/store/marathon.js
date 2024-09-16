@@ -201,22 +201,30 @@ export const marathonStore = reactive({
         const isIntersectLarge = largeCircle.intersectsCoordinate(geoPosition);
 
         if (isIntersectSmall) {
-            return this.scoreForSmallCircleReach;
+            return this.scoreForTargetCenter;
         }
 
         if (isIntersectLarge) {
-            return this.scoreForLargeCirceReach;
+            return this.scoreForTargetReach;
         }
 
         return 0;
     },
 
-    get scoreForLargeCirceReach() {
-        return 100;
+    get scoreForTargetReach() {
+        if (!this.current) {
+            return 0;
+        }
+        const score = this.calculateScore(this.current.distance.value, this.current.totalPoints.value, this.current.timeLimit.value)
+        return score.perTargetRich;
     },
 
-    get scoreForSmallCircleReach() {
-        return 250;
+    get scoreForTargetCenter() {
+        if (!this.current) {
+            return 0;
+        }
+        const score = this.calculateScore(this.current.distance.value, this.current.totalPoints.value, this.current.timeLimit.value)
+        return score.perTargetCenter;
     },
 
     checkPoint(geoPosition) {
@@ -234,10 +242,10 @@ export const marathonStore = reactive({
 
         let score = 0;
         if (isIntersectLarge) {
-            score = this.scoreForLargeCirceReach;
+            score = this.scoreForTargetReach;
         }
         if (isIntersectSmall) {
-            score = this.scoreForSmallCircleReach;
+            score = this.scoreForTargetCenter;
         }
 
         target.score = score;

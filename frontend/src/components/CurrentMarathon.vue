@@ -44,7 +44,7 @@ const goHome = () => {
 const checkPoint = () => {
   const score = marathonStore.checkIntersectionScore(geoStore.position);
   if (score > 0) {
-    if (score < marathonStore.scoreForSmallCircleReach) {
+    if (score < marathonStore.scoreForTargetCenter) {
       notIntersectedWarningText.value = `You have not reached the center of the zone. The reward will be ${score} points. Confirm checkpoint?`;
       isShowNotIntersectedConfirmation.value = true;
     } else {
