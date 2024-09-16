@@ -11,6 +11,7 @@ const form = ref({
   points: {value: 5, label: '5 points'},
   timeLimit: {value: 1, label: '1 h'},
   isDebug: false,
+  isAllVisible: false,
 });
 
 
@@ -75,6 +76,17 @@ const scoreCalculation = computed(() => {
       <div>Maximum points for challenge: <span class="tag is-dark">{{ scoreCalculation.maximumForChallenge }}</span></div>
     </div>
 
+
+    <div class="block is-flex ">
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox"  v-model="form.isAllVisible"/>
+            All targets will be visible at start
+          </label>
+        </div>
+      </div>
+    </div>
 
     <div class="block is-flex ">
       <div class="field">

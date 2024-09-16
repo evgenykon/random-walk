@@ -21,7 +21,7 @@ class Target {
     score
 }
 
-function generateTargets(number, center, distance) {
+function generateTargets(number, center, distance, isAllVisible) {
 
     /**
      * @param basePoint {TargetCoords}
@@ -34,12 +34,10 @@ function generateTargets(number, center, distance) {
         // x = distance
         // 56 lat, 37 long
         const distInDeg = distance / 111.111;
-        console.log('distInDeg', distance, distInDeg)
         const point1 = [.0, .0];
         const point2 = [distInDeg, .0];
 
         const line = new LineString([point1, point2]);
-        console.log('line1', line.getLastCoordinate())
         line.translate(basePoint.lat, basePoint.long)
         line.rotate(rotation, [basePoint.lat, basePoint.long,]);
         return line.getLastCoordinate();
@@ -60,7 +58,7 @@ function generateTargets(number, center, distance) {
     for (let i = 0; i < number; i++) {
         const newCoords = makeNewPoint(lastPoint, getRandomRotation(), distanceInterval);
         lastPoint = new TargetCoords(newCoords[0], newCoords[1]);
-        targets.push({ id: Math.random(), order: i, coords: newCoords, isVisible: true, takeAt: null, score: 0 });
+        targets.push({ id: Math.random(), order: i, coords: newCoords, isVisible: isAllVisible ? true : (i === 0), takeAt: null, score: 0 });
     }
     return targets;
 }
@@ -141,8 +139,9 @@ export const marathonStore = reactive({
             startedAt: null,
             finishedAt: null,
             cancelledAt: null,
-            targets: generateTargets(form.points.value, center, form.distance.value),
+            targets: generateTargets(form.points.value, center, form.distance.value, form.isAllVisible),
             isDebug: form.isDebug,
+            isAllTargetsVisibleAtStart: form.isAllVisible,
         })
         this.storage = this.list
     },
@@ -255,7 +254,14 @@ export const marathonStore = reactive({
 
         if (this.current.takenPoints.length >= this.current.targets.length) {
             return this.finishCurrent();
+        } else {
+            this.makeNextTargetVisible()
         }
+    },
+
+    makeNextTargetVisible() {
+        const target = this.current.targets.find(target => !target.isVisible && !target.takeAt);
+        target.isVisible = true;
     },
 
     /**

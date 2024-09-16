@@ -20,6 +20,9 @@ const cancelledAt = computed(() => {
 })
 
 const runningTime = computed(() => {
+  if (!marathon.startedAt) {
+    return 0;
+  }
   const zeroPad = (num, places) => String(num).padStart(places, '0')
   const startedAt = moment(marathon.startedAt);
   const finishedAt = marathon.finishedAt ? moment(marathon.finishedAt) : moment();
