@@ -58,23 +58,39 @@ const canFinished = computed(() => {
 </script>
 
 <template>
-  <div v-if="marathonStore.current?.id" class="card box mb-3 mt-0 pt-0">
+  <div v-if="marathonStore.current?.id" class="current-marathon card box">
     <div class="card-content">
-      <div class="media">
-        <div class="media-content">
-          <p class="title is-4">{{ marathonStore.current.title }}
-            <span v-if="marathonStore.current.isDebug" class="tag is-dark">Debug mode</span> </p>
+
+      <div class="marathon-name content">
+        <p class="title">{{ marathonStore.current.title }}
+          <span v-if="marathonStore.current.isDebug" class="tag is-dark debug-tag">Debug mode</span>
+        </p>
+      </div>
+
+      <div class="stat-line content">
+        <div class="cell">
+          <span class="label">Running time</span>
+          <span class="tag is-dark">0 h</span>
         </div>
+
+        <div class="cell">
+          <span class="label">Points taken</span>
+          <span class="tag is-dark">{{ marathonStore.current.takenPoints.length }} / {{ marathonStore.current.targets.length }}</span>
+        </div>
+
+        <div class="cell">
+          <span class="label">Current score</span>
+          <span class="tag is-dark">{{ currentScore }}</span>
+        </div>
+
+        <div class="cell">
+          <span class="label">Status</span>
+          <span class="tag is-dark status" :class="currentStatus.toLowerCase()">{{ currentStatus }}</span>
+        </div>
+
       </div>
 
-      <div class="content is-flex is-justify-content-space-between">
-        Running time <span class="tag is-dark">0 h</span>
-        Points taken <span class="tag is-dark">{{ marathonStore.current.takenPoints.length }} / {{ marathonStore.current.targets.length }}</span>
-        Current score <span class="tag is-dark">{{ currentScore }}</span>
-        Status <span class="tag is-dark status" :class="currentStatus.toLowerCase()">{{ currentStatus }}</span>
-      </div>
-
-      <div class="content is-flex is-justify-content-space-between">
+      <div class="content map-wrapper">
         <marathon-ol-map class="marathon-map"
                          :position="geoStore.position"
                          :initial-zoom="15"
@@ -84,17 +100,13 @@ const canFinished = computed(() => {
       </div>
 
       <div class="content is-flex is-justify-content-space-between">
-        <div v-if="!marathonStore.current.startedAt">
-          <button class="button is-primary is-dark" @click="startMarathon()">I am ready to Start!</button>
-        </div>
+          <button v-if="!marathonStore.current.startedAt" class="button is-primary is-dark" @click="startMarathon()">I am ready to Start!</button>
 
-        <div v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt">
-          <button class="button is-primary is-dark" @click="checkPoint()">Checkpoint</button>
-        </div>
+          <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
+                  class="button is-primary is-dark" @click="checkPoint()">Checkpoint</button>
 
-        <div v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt">
-          <button class="button is-warning is-dark" @click="abort()">Abort</button>
-        </div>
+          <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
+                  class="button is-warning is-dark" @click="abort()">Abort</button>
 
         <div v-if="marathonStore.current.isDebug">
           <button class="button" @click="geoStore.testChangeGeo(-0.0001, 0)">Down</button>
@@ -103,28 +115,69 @@ const canFinished = computed(() => {
           <button class="button" @click="geoStore.testChangeGeo(0, 0.0001)">Right</button>
         </div>
 
-        <div v-if="!marathonStore.current.startedAt">
-          <button class="button" @click="decline()">Decline</button>
-        </div>
-        <div v-if="!marathonStore.current.cancelledAt || !marathonStore.current.finishedAt">
-          <button class="button" @click="goHome()">Go to list</button>
-        </div>
-        <div v-if="marathonStore.current.cancelledAt || marathonStore.current.finishedAt">
-          <button class="button" @click="decline()">Delete</button>
-        </div>
+        <button v-if="!marathonStore.current.startedAt" class="button" @click="decline()">Decline</button>
+
+        <button v-if="!marathonStore.current.cancelledAt || !marathonStore.current.finishedAt" class="button" @click="goHome()">Go to list</button>
+
+        <button v-if="marathonStore.current.cancelledAt || marathonStore.current.finishedAt" class="button" @click="decline()">Delete</button>
+
       </div>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
-.marathon-map {
-  width: 100%;
-  height: 70vh;
-}
-.status {
-  &.finished {
-    color: #00ff00;
+<style lang="scss">
+@use "bulma/sass/utilities/mixins";
+$breakpoint: 1280px;
+
+.current-marathon.card.box {
+  margin: 0;
+  padding: 0;
+  .stat-line {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    .label {
+      margin-bottom: 0;
+    }
   }
+  .marathon-map {
+    width: 100%;
+    height: 70vh;
+  }
+  .status {
+    &.finished {
+      color: #00ff00;
+    }
+  }
+
+  @include mixins.until(550px) {
+    .card-content {
+      padding: 5px;
+    }
+    .marathon-name {
+      margin-bottom: 5px;
+      .title {
+        font-size: 14px;
+      }
+    }
+    .debug-tag {
+      display: none;
+    }
+    .stat-line {
+      .label {
+        font-size: 10px;
+      }
+    }
+    .map-wrapper {
+      padding: 0;
+    }
+    button.button {
+
+    }
+  }
+
 }
+
 </style>

@@ -33,7 +33,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-<div class="box">
+<div class="marathon-ol-map">
 
   <ol-map class="ol-map-container" :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true">
     <ol-view

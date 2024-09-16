@@ -56,5 +56,7 @@ const selectMenuItem = (item) => {
 </template>
 
 <style scoped lang="scss">
-
+#navbarBasicExample {
+  height: 100vh;
+}
 </style>

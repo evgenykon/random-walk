@@ -10,7 +10,7 @@ const form = ref({
   distance: {value: 3000, label: '3 km'},
   points: {value: 5, label: '5 points'},
   timeLimit: {value: 1, label: '1 h'},
-  isDebug: {value: false},
+  isDebug: false,
 });
 
 

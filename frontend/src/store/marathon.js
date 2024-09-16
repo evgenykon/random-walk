@@ -129,6 +129,7 @@ export const marathonStore = reactive({
     },
 
     new(form, center) {
+        console.log('new', form)
         this.list.push({
             id: new Date().getTime(),
             title: `${form.distance.label} / ${form.points.label} / ${form.timeLimit.label}`,
