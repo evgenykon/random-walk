@@ -74,8 +74,9 @@ services:
     image: nginx:latest
     restart: 'always'
     volumes:
-      - ./docker/nginx/conf/dev.conf.template:/etc/nginx/templates/default.conf.template
+      - ./docker/nginx/conf/default.conf.template:/etc/nginx/templates/default.conf.template
       - ./frontend/dist:/var/www/html/public
+      - /root/.acme.sh/ssl/:/etc/nginx/certs
 #      - ./docker/nginx/conf/allowed.users.dev:/etc/nginx/allowed.users
     ports:
-      - "8080:8080"
+      - "443:443"
