@@ -1,7 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import GeolocationSetup from "./GeolocationSetup.vue";
-import PageLoader from "./PageLoader.vue";
 const emit = defineEmits(['new-marathon', 'home'])
 
 import { geoStore } from '../store/geo.js'
@@ -27,8 +26,10 @@ const selectMenuItem = (item) => {
 
       <a class="navbar-item" href="#">
         <geolocation-setup />
-        {{ geoStore.position?.map(item => Math.round(item * 10000) / 10000) }}
-        {{ Math.floor(geoStore.geoApiData?.accuracy ?? 0) }}
+        <span style="font-size: 12px;">
+          {{ geoStore.position?.map(item => Math.round(item * 10000) / 10000) }}
+          {{ Math.floor(geoStore.geoApiData?.accuracy ?? 0) }}
+        </span>
       </a>
 
       <a class="navbar-item" href="#">
