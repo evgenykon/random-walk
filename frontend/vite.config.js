@@ -18,10 +18,10 @@ export default defineConfig({
     },
 
     manifest: {
-      name: 'app',
-      short_name: 'app',
-      description: 'app',
-      theme_color: '#ffffff',
+      name: 'Rand Marathon',
+      short_name: 'rand_marathon',
+      description: 'Randomize your marathons',
+      theme_color: '#000000',
     },
 
     workbox: {
