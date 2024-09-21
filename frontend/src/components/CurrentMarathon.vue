@@ -243,7 +243,7 @@ const runningTime = computed(() => {
       .map-wrapper {
         padding: 0;
         .marathon-map {
-          height: calc(100vh - 200px);
+          height: calc(100vh - 260px);
           &.geotools {
             height: calc(100vh - 255px);
           }

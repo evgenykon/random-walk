@@ -40,6 +40,7 @@ const clearAllData = async () => {
         @new-marathon="showScreen = 'new-marathon'"
         @clear-stored-data="isClearData = true"
         @home="showScreen = 'home'"
+        @about="showScreen = 'about'"
     />
     <app-notification />
 
@@ -74,6 +75,17 @@ const clearAllData = async () => {
     <marathon-data v-if="showScreen === 'home' && geoStore.position" @open="openMarathon"></marathon-data>
     <div  v-if="showScreen === 'home' && !geoStore.position" class="box m-5">
       <h4 class="subtitle">Waiting for GPS data</h4>
+    </div>
+    <div  v-if="showScreen === 'about'" class="box m-5">
+      <h4 class="subtitle">About this app</h4>
+      <pre style="text-align: left; font-size: 12px; margin-bottom: 10px;">
+{
+   createdWith: Vue + Vite + Bulma
+   version: 1.0
+   lastUpdate: Sept 21, 2024
+}</pre>
+
+      Send your love to <a href="https://t.me/evgeny37m" target="_blank">t.me/evgeny37m</a>
     </div>
     <current-marathon v-if="showScreen === 'marathon'" @home="showScreen = 'home'" />
   </div>

@@ -28,7 +28,7 @@ const selectMenuItem = (item) => {
       <a class="navbar-item" href="#">
         <geolocation-setup />
         {{ geoStore.position?.map(item => Math.round(item * 10000) / 10000) }}
-        {{ geoStore.geoApiData?.accuracy ?? 0 }}
+        {{ Math.floor(geoStore.geoApiData?.accuracy ?? 0) }}
       </a>
 
       <a class="navbar-item" href="#">
@@ -55,6 +55,9 @@ const selectMenuItem = (item) => {
         </a>
         <a class="navbar-item" @click="selectMenuItem('clear-stored-data')">
           Clear stored data
+        </a>
+        <a class="navbar-item" @click="selectMenuItem('about')">
+          About
         </a>
       </div>
     </div>
