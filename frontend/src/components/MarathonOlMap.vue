@@ -34,13 +34,13 @@ const drawTrack = computed(() => {
   if (!track || track.length === 0) {
     return [];
   }
-  return track.map(c => olProj.transform(c.reverse(),'EPSG:4326','EPSG:3857'));
+  return track.map(item => olProj.transform([item[0], item[1]].reverse(),'EPSG:4326','EPSG:3857')).filter(c => c[0] && c[1]);
 })
 </script>
 
 <template>
 <div class="marathon-ol-map">
-
+{{drawTrack}}
   <ol-map class="ol-map-container" :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true">
     <ol-view
         ref="view"
