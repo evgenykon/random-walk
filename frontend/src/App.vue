@@ -76,16 +76,35 @@ const clearAllData = async () => {
     <div  v-if="showScreen === 'home' && !geoStore.position" class="box m-5">
       <h4 class="subtitle">Waiting for GPS data</h4>
     </div>
-    <div  v-if="showScreen === 'about'" class="box m-5">
-      <h4 class="subtitle">About this app</h4>
-      <pre style="text-align: left; font-size: 12px; margin-bottom: 10px;">
+    <div  v-if="showScreen === 'about'" class="m-5">
+      <div class="box">
+        <h4 class="title">About this app</h4>
+        <pre style="text-align: left; font-size: 12px; margin-bottom: 10px;">
 {
-   createdWith: Vue + Vite + Bulma
+   createdWith: Vue + Vite + Bulma + OL
    version: 1.0
    lastUpdate: Sept 21, 2024
 }</pre>
 
-      Send your love to <a href="https://t.me/evgeny37m" target="_blank">t.me/evgeny37m</a>
+        <div>
+          Send your love to <a href="https://t.me/evgeny37m" target="_blank">t.me/evgeny37m</a>
+        </div>
+      </div>
+      <div class="box">
+        <div class="subtitle">
+          <h4>Release notes</h4>
+        </div>
+        <div class="block" style="text-align: left; font-size: 12px; margin-bottom: 10px;">
+          <strong>Sept 21, 2024</strong>
+          <p>Want to say 'hi' to all runners! New app in da base!</p>
+          <p>Wish you enjoy it!</p>
+          <p>Make a randomly generated route (sorry for points in the lake or something like that - its random!) and run it!</p>
+        </div>
+
+      </div>
+
+
+
     </div>
     <current-marathon v-if="showScreen === 'marathon'" @home="showScreen = 'home'" />
   </div>
