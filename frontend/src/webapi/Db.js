@@ -20,33 +20,18 @@ class Db {
     }
 
     async loadTrack(trackId) {
-        // return (await this.dbPointer.tracks.where({trackId: String(trackId)}).toArray());
         const data = localStorage.getItem(`track.${trackId}`)
+        console.log('loadTrack', data)
         if (data) {
             return JSON.parse(data)
         }
     }
 
     async dropTrack(trackId) {
-        // return new Promise((resolve, reject) => {
-        //     const db = this.dbPointer.tracks
-        //     this.dbPointer.transaction('rw', db, async () => {
-        //         return db.where("trackId").equals(trackId).delete();
-        //     }).then(() => {
-        //         resolve()
-        //     }).catch(reject)
-        // });
         localStorage.removeItem(`track.${trackId}`)
     }
 
     async saveTrack(trackId, data) {
-        // return new Promise((resolve) => {
-        //     this.dbPointer.transaction('rw', this.dbPointer.tracks, () => {
-        //         this.dbPointer.tracks.add({trackId: String(trackId), data: JSON.stringify(data) }).then(() => {
-        //             resolve();
-        //         })
-        //     })
-        // });
         localStorage.setItem(`track.${trackId}`, JSON.stringify(data))
     }
 }

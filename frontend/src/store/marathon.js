@@ -201,7 +201,7 @@ export const marathonStore = reactive({
         }
         this.currentTrack.push(clearGeoObject);
         try {
-            await this.db.saveTrack(this.current.id, clearGeoObject);
+            await this.db.saveTrack(this.current.id, this.currentTrack);
         } catch (e) {
             console.error('saveTrack error', e)
         }
@@ -223,7 +223,7 @@ export const marathonStore = reactive({
         try {
             const storedTrack = await this.db.loadTrack(item.id);
             if (storedTrack) {
-                this.currentTrack = storedTrack.map(item => JSON.parse(item.data)).map(item => [parseFloat(item[0]), parseFloat(item[1])])
+                this.currentTrack = storedTrack
                 console.log('Track loaded' )
             }
         } catch (e) {
