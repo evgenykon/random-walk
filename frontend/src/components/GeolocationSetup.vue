@@ -18,9 +18,9 @@ watch(error, (value) => {
 });
 watch(coords, (value) => {
   emit('update', value)
-  // console.log('geo update', value)
+  console.log('geo update', value)
   geoStore.setGeoAPiData(coords);
-  marathonStore.addGeoToTrack(coords);
+  marathonStore.addGeoToTrack([value?.latitude ?? 0, value?.longitude ?? 0]);
 })
 
 

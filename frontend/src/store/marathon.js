@@ -172,15 +172,18 @@ export const marathonStore = reactive({
 
     async addGeoToTrack(geo) {
         if (!this.current) {
+            console.log('addGeoToTrack >> no current')
             return;
         }
         if (!this.current.isTrackEnabled) {
+            console.log('addGeoToTrack >> tracking  not enabled')
             return;
         }
         if (!this.currentTrack) {
             this.currentTrack = [];
         }
         if (geo.length === 0 || !geo[0] || !geo[1]) {
+            console.log('addGeoToTrack >> geodata empty', geo)
             return;
         }
         const clearGeoObject = [geo[0], geo[1]];
@@ -202,6 +205,7 @@ export const marathonStore = reactive({
         } catch (e) {
             console.error('saveTrack error', e)
         }
+        console.log('addGeoToTrack >> add', clearGeoObject)
     },
 
     async setCurrent(item) {

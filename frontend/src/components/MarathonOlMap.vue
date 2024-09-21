@@ -40,7 +40,6 @@ const drawTrack = computed(() => {
 
 <template>
 <div class="marathon-ol-map">
-{{drawTrack}}
   <ol-map class="ol-map-container" :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true">
     <ol-view
         ref="view"
