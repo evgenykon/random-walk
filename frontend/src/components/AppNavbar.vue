@@ -22,7 +22,7 @@ const selectMenuItem = (item) => {
   <nav class="app-navbar navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="#" @click="selectMenuItem('home')">
-        <img src="../assets/logo.svg">
+        <img src="../assets/logo2.png">
       </a>
 
       <a class="navbar-item" href="#">
