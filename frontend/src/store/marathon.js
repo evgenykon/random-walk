@@ -391,5 +391,13 @@ export const marathonStore = reactive({
 
     upBalance(value) {
         this.scoreBalance += value
+    },
+
+    async clearAll() {
+        this.current = null
+        this.currentTrack = []
+        this.list = []
+        this.storage = this.list
+        await this.db.clearDb()
     }
 })

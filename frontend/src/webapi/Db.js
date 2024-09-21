@@ -14,6 +14,9 @@ class Db {
         console.log('IndexDb inited')
     }
 
+    async clearDb() {
+        return (await this.dbPointer.tracks.clear());
+    }
 
     async loadTrack(trackId) {
         return (await this.dbPointer.tracks.where({trackId: String(trackId)}).toArray());

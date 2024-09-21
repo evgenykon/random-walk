@@ -53,9 +53,9 @@ const selectMenuItem = (item) => {
         <a v-if="geoStore.position" class="navbar-item" @click="selectMenuItem('new-marathon')">
           Create new Marathon
         </a>
-        <!-- a class="navbar-item">
-          Summary
-        </a -->
+        <a class="navbar-item" @click="selectMenuItem('clear-stored-data')">
+          Clear stored data
+        </a>
       </div>
     </div>
   </nav>
