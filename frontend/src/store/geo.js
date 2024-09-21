@@ -7,14 +7,9 @@ export const geoStore = reactive({
 
     get position() {
         return this.geoApiData ? [this.geoApiData.latitude, this.geoApiData.longitude,] : null
-        // return [
-        //     56.0195,
-        //     37.2156, // 37.205,
-        // ];
     },
 
     setGeoAPiData(value) {
-        console.log(value)
         this.geoApiData = value
     },
 

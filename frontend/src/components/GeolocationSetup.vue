@@ -4,6 +4,7 @@ import {onMounted, ref, watch} from "vue";
 const emit = defineEmits(['error', 'success', 'update'])
 
 import { geoStore } from '../store/geo.js'
+import { marathonStore } from '../store/marathon.js'
 
 const { coords, locatedAt, error, resume, pause } = useGeolocation()
 watch(error, (value) => {
@@ -19,6 +20,7 @@ watch(coords, (value) => {
   emit('update', value)
   // console.log('geo update', value)
   geoStore.setGeoAPiData(coords);
+  marathonStore.addGeoToTrack(coords);
 })
 
 

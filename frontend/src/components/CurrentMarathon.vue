@@ -12,18 +12,14 @@ const isShowFinalModal = ref(false);
 
 const emit = defineEmits(['home', 'start'])
 
-// onMounted(() => {
-//   timer.value = setInterval(() => {
-//
-//   }, 1000)
-// })
-//
-// onUnmounted(() => {
-//   clearInterval(timer.value)
-// })
+onMounted(() => {
+  console.log('mounted', geoStore.position)
+  marathonStore.addGeoToTrack(geoStore.position)
+})
 
-const decline = () => {
-  marathonStore.decline(marathonStore.current)
+
+const decline = async () => {
+  await marathonStore.decline(marathonStore.current)
   goHome()
 }
 
@@ -173,8 +169,6 @@ const runningTime = computed(() => {
 
         <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
                 class="button is-warning is-dark" @click="abort()">Abort</button>
-
-
 
         <button v-if="!marathonStore.current.startedAt" class="button" @click="decline()">Decline</button>
 

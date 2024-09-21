@@ -20,10 +20,13 @@ onBeforeMount(() => {
   marathonStore.init();
 })
 
-const openMarathon = (item) => {
-  marathonStore.setCurrent(item);
+const openMarathon = async (item) => {
+  await marathonStore.setCurrent(item);
   showScreen.value = 'marathon'
-  console.log(item)
+}
+
+const test = async () => {
+  marathonStore.test(geoStore.position)
 }
 
 </script>
@@ -41,6 +44,8 @@ const openMarathon = (item) => {
                        @cancel="showScreen = 'home'"
                        @create="showScreen = 'home'"
     />
+
+<!--    <button @click="test">test db</button>-->
 
     <h3 v-if="showScreen === 'home'" class="title">Random Marathon</h3>
     <marathon-data v-if="showScreen === 'home' && geoStore.position" @open="openMarathon"></marathon-data>

@@ -14,9 +14,5 @@ up:
 	docker compose down --remove-orphans
 	docker compose up -d nginx
 
-dev:
-	docker compose down --remove-orphans
-	#docker compose up -d --scale nginx-prod=0
-
 clear:
 	docker system prune -af && docker image prune -af

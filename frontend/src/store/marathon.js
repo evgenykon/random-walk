@@ -1,7 +1,8 @@
-import {computed, reactive} from 'vue'
-import { useStorage } from '@vueuse/core'
+import {reactive} from 'vue'
+import {useStorage} from '@vueuse/core'
 import LineString from 'ol/geom/LineString.js'
 import Circle from 'ol/geom/Circle.js'
+import Db from "../webapi/Db.js";
 
 class TargetCoords {
     lat
@@ -63,6 +64,7 @@ function generateTargets(number, center, distance, isAllVisible) {
     return targets;
 }
 
+
 export const marathonStore = reactive({
 
     storage: null,
@@ -71,6 +73,9 @@ export const marathonStore = reactive({
 
     scoreStorage: null,
     scoreBalance: 0,
+
+    currentTrack: [],
+    db: null,
 
     distances: [
         {value: 1000, label: '1 km'},
@@ -119,6 +124,7 @@ export const marathonStore = reactive({
     init() {
         this.storage = useStorage('marathon', [])
         this.scoreStorage = useStorage('scores', 0)
+        this.db = new Db();
 
         try {
             const storageList = this.storage
@@ -131,11 +137,18 @@ export const marathonStore = reactive({
                 this.scoreBalance = score
             }
 
-            console.log('Marathon store inited', storageList )
+            console.log('Marathon store inited' )
         } catch (e) {
             console.error(e)
         }
+    },
 
+    async test(geo) {
+        if (geo.length === 0 || !geo[0] || !geo[1]) {
+            return;
+        }
+        const clearGeoObject = [geo[0], geo[1]];
+        await this.db.saveTrack(this.list[0].id, clearGeoObject)
     },
 
     new(form, center) {
@@ -152,11 +165,46 @@ export const marathonStore = reactive({
             targets: generateTargets(form.points.value, center, form.distance.value, form.isAllVisible),
             isDebug: form.isDebug,
             isAllTargetsVisibleAtStart: form.isAllVisible,
+            isTrackEnabled: form.isTrackEnabled,
         })
         this.storage = this.list
     },
 
-    setCurrent(item) {
+    async addGeoToTrack(geo) {
+        if (!this.current) {
+            return;
+        }
+        if (!this.current.isTrackEnabled) {
+            return;
+        }
+        if (!this.currentTrack) {
+            this.currentTrack = [];
+        }
+        if (geo.length === 0 || !geo[0] || !geo[1]) {
+            return;
+        }
+        const clearGeoObject = [geo[0], geo[1]];
+        if (this.currentTrack.length > 0) {
+            const lastGeoInTrack = this.currentTrack[this.currentTrack.length-1];
+            const lastGeoInTrackLat = Math.floor(lastGeoInTrack[0] * 10000);
+            const lastGeoInTrackLong = Math.floor(lastGeoInTrack[1] * 10000);
+
+            const clearGeoLat = Math.floor(clearGeoObject[0] * 10000);
+            const clearGeoLong = Math.floor(clearGeoObject[1] * 10000);
+            if (lastGeoInTrackLat === clearGeoLat && lastGeoInTrackLong === clearGeoLong) {
+                console.log('addGeoToTrack - skip same coords', clearGeoObject)
+                return;
+            }
+        }
+        this.currentTrack.push(clearGeoObject);
+        try {
+            await this.db.saveTrack(this.current.id, clearGeoObject);
+        } catch (e) {
+            console.error('saveTrack error', e)
+        }
+    },
+
+    async setCurrent(item) {
         this.current = item
 
         this.list = this.list.map(listItem => {
@@ -167,14 +215,31 @@ export const marathonStore = reactive({
         })
 
         this.storage = this.list
+
+        try {
+            const storedTrack = await this.db.loadTrack(item.id);
+            if (storedTrack) {
+                this.currentTrack = storedTrack.map(item => JSON.parse(item.data)).map(item => [parseFloat(item[0]), parseFloat(item[1])])
+                console.log('Track loaded' )
+            }
+        } catch (e) {
+            console.error('setCurrent load track error', e)
+        }
     },
 
-    decline(item) {
+    async decline(item) {
         this.current = null;
-        const index = this.list.indexOf(item)
+        const index = this.list.indexOf(item);
         if (index > -1) {
-            this.list.splice(this.list.indexOf(item), 1)
-            this.storage = this.list
+            this.list.splice(this.list.indexOf(item), 1);
+            this.storage = this.list;
+            this.currentTrack = []
+            try {
+                await this.db.dropTrack(item.id);
+                console.log('track deleted')
+            } catch (e) {
+                console.error('delete track error', e)
+            }
         }
     },
 
