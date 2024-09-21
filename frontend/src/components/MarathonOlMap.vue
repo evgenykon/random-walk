@@ -3,8 +3,11 @@ import {ref, onMounted, onBeforeMount, computed} from "vue";
 import * as olProj from 'ol/proj';
 import User from "./map/User.vue";
 import Target from "./map/Target.vue";
-const {position, initialZoom,} = defineProps({
+import GeoTrack from "./map/GeoTrack.vue";
+import {marathonStore} from "../store/marathon.js";
+const {position, initialZoom,track,visibleTargets,isDebug} = defineProps({
   position: Array,
+  track: Array,
   initialZoom: Number,
   visibleTargets: Array,
   isDebug: Boolean
@@ -16,7 +19,6 @@ const projection = ref('EPSG:3857');
 const zoom = ref(6);
 const rotation = ref(0);
 
-
 onBeforeMount(() => {
   const posValues = position.map(item => item)
   if (Array.isArray(posValues)) {
@@ -25,11 +27,15 @@ onBeforeMount(() => {
   if (initialZoom) {
     zoom.value = initialZoom;
   }
+
 })
 
-
-
-
+const drawTrack = computed(() => {
+  if (!track || track.length === 0) {
+    return [];
+  }
+  return track.map(c => olProj.transform(c.reverse(),'EPSG:4326','EPSG:3857'));
+})
 </script>
 
 <template>
@@ -59,6 +65,9 @@ onBeforeMount(() => {
                   :number="visibleTarget.order"
                   :is-taken="!!visibleTarget.takeAt"
           />
+
+          <geo-track :coordinates="drawTrack" />
+
         </ol-source-vector>
       </ol-style>
     </ol-vector-layer>

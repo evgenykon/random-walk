@@ -149,6 +149,7 @@ const runningTime = computed(() => {
         <marathon-ol-map class="marathon-map"
                          :class="{'geotools': marathonStore.current.isDebug}"
                          :position="geoStore.position"
+                         :track="marathonStore.currentTrack"
                          :initial-zoom="15"
                          :visible-targets="marathonStore.visibleTargets"
                          :is-debug="marathonStore.current.isDebug"
@@ -199,7 +200,7 @@ const runningTime = computed(() => {
   }
   .marathon-map {
     width: 100%;
-    height: 70vh;
+    height: 65vh;
   }
   .status {
     &.finished {
@@ -209,14 +210,13 @@ const runningTime = computed(() => {
   .card-content {
     display: flex;
     flex-direction: column;
-    height: 100%;
     .action-bar {
       margin-top: auto;
     }
   }
   .action-bar {
     margin-top: auto;
-    height: 6vh;
+    height: 5vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
