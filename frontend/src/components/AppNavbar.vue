@@ -54,6 +54,9 @@ const selectMenuItem = (item) => {
         <a v-if="geoStore.position" class="navbar-item" @click="selectMenuItem('new-marathon')">
           Create new Marathon
         </a>
+        <a v-if="geoStore.position" class="navbar-item" @click="selectMenuItem('scan-qr')">
+          Scan QR
+        </a>
         <a class="navbar-item" @click="selectMenuItem('clear-stored-data')">
           Clear stored data
         </a>

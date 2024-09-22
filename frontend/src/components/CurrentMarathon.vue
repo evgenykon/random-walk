@@ -4,16 +4,19 @@ import { geoStore } from '../store/geo.js'
 import MarathonOlMap from "./MarathonOlMap.vue";
 import {computed, ref, onMounted, onUnmounted} from "vue";
 import moment from "moment/moment.js";
+import QRCode from 'qrcode';
 
 const timer = ref(null);
 const isShowNotIntersectedConfirmation = ref(false);
 const notIntersectedWarningText = ref('');
 const isShowFinalModal = ref(false);
+const isShowQR = ref(false);
+const qrImg = ref(null);
 
 const emit = defineEmits(['home', 'start'])
 
 onMounted(() => {
-  console.log('mounted', geoStore.position)
+  qrImg.value = null
   marathonStore.addGeoToTrack(geoStore.position)
 })
 
@@ -70,6 +73,11 @@ const runningTime = computed(() => {
   const duration = moment.duration(finishedAt.diff(startedAt))
   return duration.hours() + ":" + zeroPad(duration.minutes(), 2) + ":" + zeroPad(duration.seconds(), 2);
 })
+
+const shareQR = async () => {
+  isShowQR.value = true
+  qrImg.value = await QRCode.toDataURL(marathonStore.sharingData)
+}
 </script>
 
 <template>
@@ -112,6 +120,23 @@ const runningTime = computed(() => {
     </div>
   </div>
 
+  <!-- QR -->
+  <div class="modal" :class="{'is-active': isShowQR}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Share my path</p>
+      </header>
+      <section class="modal-card-body">
+        <img :src="qrImg" alt="QR" />
+      </section>
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button class="button" @click="isShowQR = false;">Close</button>
+        </div>
+      </footer>
+    </div>
+  </div>
 
   <div v-if="marathonStore.current?.id" class="current-marathon card box">
     <div class="card-content">
@@ -163,7 +188,9 @@ const runningTime = computed(() => {
       </div>
 
       <div class="content action-bar">
-        <button v-if="!marathonStore.current.startedAt" class="button is-primary is-dark" @click="startMarathon()">I am ready to Start!</button>
+        <button v-if="!marathonStore.current.startedAt" class="button is-primary is-dark" @click="startMarathon()">Let's go!</button>
+
+        <button v-if="!marathonStore.current.startedAt" class="button is-dark" @click="shareQR()">Share with QR</button>
 
         <button v-if="marathonStore.current.startedAt && !marathonStore.current.cancelledAt && !marathonStore.current.finishedAt"
                 class="button is-primary is-dark" @click="checkPoint()">Checkpoint</button>

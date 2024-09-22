@@ -22,7 +22,9 @@ class Target {
     score
 }
 
-function generateTargets(number, center, distance, isAllVisible) {
+function generateTargets(number, center, distance, isAllVisible, maxAngle) {
+
+    console.log('generateTargets maxAngle', maxAngle)
 
     /**
      * @param basePoint {TargetCoords}
@@ -49,15 +51,15 @@ function generateTargets(number, center, distance, isAllVisible) {
         return degrees * (Math.PI/180);
     }
 
-    function getRandomRotation () {
-        return degreesToRadians(Math.floor(Math.random() * 360));
+    function getRandomRotation (maxAngle) {
+        return degreesToRadians(Math.floor(Math.random() * maxAngle));
     }
 
     let targets = [];
     let lastPoint = new TargetCoords(center[0], center[1]);
     const distanceInterval = distance / (number - 1) / 1000;
     for (let i = 0; i < number; i++) {
-        const newCoords = makeNewPoint(lastPoint, getRandomRotation(), distanceInterval);
+        const newCoords = makeNewPoint(lastPoint, getRandomRotation(maxAngle), distanceInterval);
         lastPoint = new TargetCoords(newCoords[0], newCoords[1]);
         targets.push({ id: Math.random(), order: i, coords: newCoords, isVisible: isAllVisible, takeAt: null, score: 0 });
     }
@@ -143,14 +145,6 @@ export const marathonStore = reactive({
         }
     },
 
-    async test(geo) {
-        if (geo.length === 0 || !geo[0] || !geo[1]) {
-            return;
-        }
-        const clearGeoObject = [geo[0], geo[1]];
-        await this.db.saveTrack(this.list[0].id, clearGeoObject)
-    },
-
     new(form, center) {
         this.list.push({
             id: new Date().getTime(),
@@ -162,7 +156,7 @@ export const marathonStore = reactive({
             startedAt: null,
             finishedAt: null,
             cancelledAt: null,
-            targets: generateTargets(form.points.value, center, form.distance.value, form.isAllVisible),
+            targets: generateTargets(form.points.value, center, form.distance.value, form.isAllVisible, form.isMaxAngleLimit ? 135 : 360),
             isDebug: form.isDebug,
             isAllTargetsVisibleAtStart: form.isAllVisible,
             isTrackEnabled: form.isTrackEnabled,
@@ -399,5 +393,13 @@ export const marathonStore = reactive({
         this.list = []
         this.storage = this.list
         await this.db.clearDb()
+    },
+
+    get sharingData() {
+        return JSON.stringify(this.current)
+    },
+
+    importPath(data) {
+        this.list.push(data);
     }
 })

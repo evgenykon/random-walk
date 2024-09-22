@@ -6,11 +6,11 @@ import { geoStore } from './store/geo.js'
 import PageLoader from "./components/PageLoader.vue";
 import AppNotification from "./components/AppNotification.vue";
 
-import { notificationStore } from './store/notification.js'
 import AppNavbar from "./components/AppNavbar.vue";
 import MarathonData from "./components/MarathonData.vue";
 import NewMarathonForm from "./components/NewMarathonForm.vue";
 import CurrentMarathon from "./components/CurrentMarathon.vue";
+import ScanQr from "./components/ScanQr.vue";
 
 
 const isLoading = ref(false);
@@ -41,6 +41,7 @@ const clearAllData = async () => {
         @clear-stored-data="isClearData = true"
         @home="showScreen = 'home'"
         @about="showScreen = 'about'"
+        @scan-qr="showScreen = 'scan-qr'"
     />
     <app-notification />
 
@@ -82,7 +83,7 @@ const clearAllData = async () => {
         <pre style="text-align: left; font-size: 12px; margin-bottom: 10px;">
 {
    createdWith: Vue + Vite + Bulma + OL
-   version: 1.0
+   version: 1.1
    lastUpdate: Sept 21, 2024
 }</pre>
 
@@ -95,18 +96,22 @@ const clearAllData = async () => {
           <h4>Release notes</h4>
         </div>
         <div class="block" style="text-align: left; font-size: 12px; margin-bottom: 10px;">
-          <strong>Sept 21, 2024</strong>
+          <strong>Sept 22, 2024 v1.1</strong>
+          <p>Sharing between devices! If you want to run with someone just share your path by QR code before the start!</p>
+          <p>Your partner can scan your QR and add same path to his device.</p>
+        </div>
+        <div class="block" style="text-align: left; font-size: 12px; margin-bottom: 10px;">
+          <strong>Sept 21, 2024 v1.0</strong>
           <p>Want to say 'hi' to all runners! New app in da base!</p>
           <p>Wish you enjoy it!</p>
           <p>Make a randomly generated route (sorry for points in the lake or something like that - its random!) and run it!</p>
         </div>
-
       </div>
-
-
-
     </div>
+
     <current-marathon v-if="showScreen === 'marathon'" @home="showScreen = 'home'" />
+
+    <scan-qr v-if="showScreen === 'scan-qr'" @home="showScreen='home'"></scan-qr>
   </div>
 
 

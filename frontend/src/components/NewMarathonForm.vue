@@ -13,6 +13,7 @@ const form = ref({
   isDebug: false,
   isAllVisible: false,
   isTrackEnabled: false,
+  isMaxAngleLimit: false,
 });
 
 
@@ -94,6 +95,17 @@ const scoreCalculation = computed(() => {
           <label class="checkbox">
             <input type="checkbox"  v-model="form.isTrackEnabled"/>
             Track route
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="block is-flex ">
+      <div class="field">
+        <div class="control">
+          <label class="checkbox">
+            <input type="checkbox"  v-model="form.isMaxAngleLimit"/>
+            Random max angle limit 180
           </label>
         </div>
       </div>
