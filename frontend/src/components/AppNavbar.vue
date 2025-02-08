@@ -48,18 +48,16 @@ const selectMenuItem = (item) => {
       </a>
     </div>
 
-
-
     <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active': menuExpanded}">
       <div class="navbar-start">
         <a v-if="geoStore.position" class="navbar-item" @click="selectMenuItem('new-marathon')">
-          Create new Marathon
+          Create new route
         </a>
         <a v-if="geoStore.position" class="navbar-item" @click="selectMenuItem('scan-qr')">
           Scan QR
         </a>
-        <a class="navbar-item" @click="selectMenuItem('clear-stored-data')">
-          Clear stored data
+        <a class="navbar-item" @click="selectMenuItem('cloud')">
+          Cloud data
         </a>
         <a class="navbar-item" @click="selectMenuItem('about')">
           About

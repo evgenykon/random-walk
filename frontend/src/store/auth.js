@@ -7,6 +7,7 @@ import {useStorage} from '@vueuse/core'
 export const authStore = reactive({
 
     auth: null,
+    serverData: {},
 
     async init() {
         this.auth = useStorage('auth', sha256(Math.random()))
@@ -17,12 +18,14 @@ export const authStore = reactive({
         return this.auth
     },
 
-    generateNewAuth(value) {
-        this.auth = sha256(Math.random())
+    async generateNewAuth() {
+        await axios.delete('/api/id', {headers: `Authorization: Bearer ${this.localAuthId}`});
+        //this.auth = sha256(Math.random())
     },
 
     async checkApiId() {
         const response = await axios.get('/api/id', {headers: `Authorization: Bearer ${this.localAuthId}`});
+        this.serverData = response.data?.id ?? {}
     }
 
 })

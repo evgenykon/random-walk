@@ -17,9 +17,11 @@ async function routes (fastify, options) {
             if (!id) {
                 id = new IdModel();
                 id.lastCoords = null
+                id.routes = []
             }
             id.lastConnection = new Date()
             id.lastIp = req.ip
+            id.routes = []
             await store.set(idAuth, id)
 
             return resp
