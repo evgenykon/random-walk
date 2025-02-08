@@ -6,7 +6,14 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   server: {
     host: '0.0.0.0',
-    port: 8080
+    port: 8080,
+    proxy: {
+      '/api': {
+        target: 'http://backend:8081',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      }
+    }
   },
   plugins: [vue(), VitePWA({
     registerType: 'autoUpdate',

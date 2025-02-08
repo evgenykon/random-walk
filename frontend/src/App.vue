@@ -1,6 +1,7 @@
 
 <script setup>
 import {onBeforeMount, ref} from "vue";
+import { authStore } from './store/auth.js'
 import { marathonStore } from './store/marathon.js'
 import { geoStore } from './store/geo.js'
 import PageLoader from "./components/PageLoader.vue";
@@ -17,8 +18,9 @@ const isLoading = ref(false);
 const showScreen = ref('home');
 const isClearData = ref(false)
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   marathonStore.init();
+  await authStore.init();
 })
 
 const openMarathon = async (item) => {

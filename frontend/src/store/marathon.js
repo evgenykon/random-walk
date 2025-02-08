@@ -3,7 +3,6 @@ import {useStorage} from '@vueuse/core'
 import LineString from 'ol/geom/LineString.js'
 import Circle from 'ol/geom/Circle.js'
 import Db from "../webapi/Db.js";
-
 class TargetCoords {
     lat
     long

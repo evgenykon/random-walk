@@ -1,0 +1,20 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/redis": "^7.0.2",
+    "fastify": "^5.2.1",
+    "fastify-cli": "^7.3.0",
+    "fastify-plugin": "^5.0.1",
+    "sha256": "^0.2.0"
+  }
+}
