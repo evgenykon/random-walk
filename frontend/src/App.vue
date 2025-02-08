@@ -72,7 +72,13 @@ const clearAllData = async () => {
 
 <!--    <button @click="test">test db</button>-->
 
-    <h3 v-if="showScreen === 'home'" class="title">Random Marathon</h3>
+    <div class="box" style="display: flex;justify-content: center;">
+      <a href="/">
+        <img src="./assets/favicon_1024.png" style="width: 50%; max-width: 500px;">
+      </a>
+    </div>
+
+    <h3 v-if="showScreen === 'home'" class="title">Routes</h3>
     <marathon-data v-if="showScreen === 'home' && geoStore.position" @open="openMarathon"></marathon-data>
     <div  v-if="showScreen === 'home' && !geoStore.position" class="box m-5">
       <h4 class="subtitle">Waiting for GPS data</h4>
@@ -83,17 +89,21 @@ const clearAllData = async () => {
         <pre style="text-align: left; font-size: 12px; margin-bottom: 10px;">
 {
    createdWith: Vue + Vite + Bulma + OL
-   version: 1.1
-   lastUpdate: Sept 21, 2024
+   version: 1.2
+   lastUpdate: Feb 09, 2025
 }</pre>
 
         <div>
-          Send your love to <a href="https://t.me/evgeny37m" target="_blank">t.me/evgeny37m</a>
+          Send your love to <a href="https://t.me/evgeny39m" target="_blank">https://t.me/evgeny39m</a>
         </div>
       </div>
       <div class="box">
         <div class="subtitle">
           <h4>Release notes</h4>
+        </div>
+        <div class="block" style="text-align: left; font-size: 12px; margin-bottom: 10px;">
+          <strong>Feb 09, 2025 v1.2</strong>
+          <p>Change naming (Random marathon -> Random walk), update icons</p>
         </div>
         <div class="block" style="text-align: left; font-size: 12px; margin-bottom: 10px;">
           <strong>Sept 22, 2024 v1.1</strong>

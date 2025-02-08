@@ -1,9 +1,16 @@
 build-front:
-	docker-compose build node
-	docker-compose run --rm node bash -c "npm install && npm run build"
+	docker compose build frontend
+	docker compose run --rm frontend bash -c "npm install && npm run build"
 
-run-node-bash:
-	docker-compose run --rm node bash
+run-frontend-bash:
+	docker compose run --rm frontend bash
+
+build-back:
+	docker compose build backend
+	docker compose run --rm backend bash -c "npm install && npm run build"
+
+run-backend-bash:
+	docker compose run --rm backend bash
 
 up-dev:
 	docker compose down --remove-orphans

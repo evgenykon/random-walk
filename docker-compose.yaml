@@ -1,6 +1,6 @@
 services:
 
-  node:
+  frontend:
     image: node:22
     restart: 'always'
     working_dir: /src/app/
@@ -8,6 +8,19 @@ services:
       - ./frontend:/src/app/
     ports:
       - 8080:8080
+    command: "npm run dev"
+
+  redis:
+    image: redis:latest
+
+  backend:
+    image: node:22
+    restart: 'always'
+    working_dir: /src/app/
+    volumes:
+      - ./backend:/src/app/
+    ports:
+      - 8081:8081
     command: "npm run dev"
 
   nginx:

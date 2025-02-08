@@ -12,6 +12,10 @@ server {
 
     index index.html;
     access_log /dev/stdout;
+
+    location /api/ {
+        proxy_pass http://localhost:8081/;
+    }
 }
 
 # default HTTPS-server

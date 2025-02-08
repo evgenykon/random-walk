@@ -18,9 +18,9 @@ export default defineConfig({
     },
 
     manifest: {
-      name: 'Rand Marathon',
-      short_name: 'rand_marathon',
-      description: 'Randomize your marathons',
+      name: 'RandomWalk',
+      short_name: 'random walk',
+      description: 'Random walk',
       theme_color: '#000000',
     },
 

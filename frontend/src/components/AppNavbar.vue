@@ -7,6 +7,7 @@ import { geoStore } from '../store/geo.js'
 import {marathonStore} from "../store/marathon.js";
 
 const menuExpanded = ref(false)
+const geoExpanded = ref(false)
 
 const selectMenuItem = (item) => {
   emit(item)
@@ -21,12 +22,12 @@ const selectMenuItem = (item) => {
   <nav class="app-navbar navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="#" @click="selectMenuItem('home')">
-        <img src="../assets/logo2.png">
+        <img src="../assets/favicon_128.png">
       </a>
 
-      <a class="navbar-item" href="#">
+      <a class="navbar-item" href="#" @click="geoExpanded = !geoExpanded">
         <geolocation-setup />
-        <span style="font-size: 12px;">
+        <span v-if="geoExpanded" style="font-size: 12px;">
           {{ geoStore.position?.map(item => Math.round(item * 10000) / 10000) }}
           {{ Math.floor(geoStore.geoApiData?.accuracy ?? 0) }}
         </span>
