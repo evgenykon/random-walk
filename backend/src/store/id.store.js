@@ -21,4 +21,16 @@ export default class IdStore {
             resolve({'aaa': 1})
         });
     }
+
+    drop(id) {
+        const redis = this.redis
+        return new Promise((resolve, reject) => {
+            redis.del(`id:${id}`, (err, val) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(val)
+            })
+        });
+    }
 }

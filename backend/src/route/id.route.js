@@ -32,14 +32,14 @@ async function routes (fastify, options) {
         }
     })
 
-    fastify.post('/id', async (req, resp) => {
+    fastify.delete('/id', async (req, resp) => {
         try {
             const store = new IdStore(redis)
             const idAuth = (req.headers.authorization ?? '').replace(/Bearer /g, '')
-            const id = await store.get(idAuth)
+            const id = await store.drop(idAuth)
 
             return resp
-                .send({success: true, id})
+                .send({success: true})
         } catch (e) {
             return resp
                 .send({success: false, error: e.message})
