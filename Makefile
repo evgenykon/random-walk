@@ -1,5 +1,6 @@
 build-front:
 	docker compose build frontend
+	rm -rf ./frontend/dist/*
 	docker compose run --rm frontend bash -c "npm install && npm run build"
 
 run-frontend-bash:
