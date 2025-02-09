@@ -13,19 +13,18 @@ async function routes (fastify, options) {
         try {
             const store = new IdStore(redis)
             const idAuth = (req.headers.authorization ?? '').replace(/Bearer /g, '')
-            let id = await store.get(idAuth)
-            if (!id) {
-                id = new IdModel();
-                id.lastCoords = null
-                id.routes = []
+            let data = await store.get(idAuth)
+            if (!data) {
+                data = new IdModel();
+                data.lastCoords = null
+                data.routes = []
             }
-            id.lastConnection = new Date()
-            id.lastIp = req.ip
-            id.routes = []
-            await store.set(idAuth, id)
+            data.lastConnection = new Date()
+            data.lastIp = req.ip
+            // await store.set(idAuth, data)
 
             return resp
-                .send({success: true, id})
+                .send({success: true, data})
         } catch (e) {
             return resp
                 .send({success: false, error: e.message})
@@ -36,7 +35,32 @@ async function routes (fastify, options) {
         try {
             const store = new IdStore(redis)
             const idAuth = (req.headers.authorization ?? '').replace(/Bearer /g, '')
-            const id = await store.drop(idAuth)
+            await store.drop(idAuth)
+
+            return resp
+                .send({success: true})
+        } catch (e) {
+            return resp
+                .send({success: false, error: e.message})
+        }
+    })
+
+    fastify.post('/routes', async (req, resp) => {
+        try {
+            const store = new IdStore(redis)
+            const idAuth = (req.headers.authorization ?? '').replace(/Bearer /g, '')
+            if (!idAuth) {
+                return resp.code(401).send('Invalid header');
+            }
+            let data = await store.get(idAuth)
+            if (!data) {
+                data = new IdModel();
+                data.lastCoords = null
+            }
+            data.lastConnection = new Date()
+            data.lastIp = req.ip
+            data.routes = req.body?.routes ?? []
+            await store.set(idAuth, data)
 
             return resp
                 .send({success: true})

@@ -19,13 +19,22 @@ export const authStore = reactive({
     },
 
     async generateNewAuth() {
-        await axios.delete('/api/id', {headers: `Authorization: Bearer ${this.localAuthId}`});
-        //this.auth = sha256(Math.random())
+        await axios.delete('/api/id', {headers: { Authorization: `Bearer ${this.localAuthId}`}});
+        this.auth = sha256(Math.random())
     },
 
     async checkApiId() {
-        const response = await axios.get('/api/id', {headers: `Authorization: Bearer ${this.localAuthId}`});
-        this.serverData = response.data?.id ?? {}
-    }
+        const response = await axios.get('/api/id', {headers: { Authorization: `Bearer ${this.localAuthId}`}});
+        this.serverData = response.data?.data ?? {}
+    },
 
+    async saveRoutes(routes) {
+        await axios.post('/api/routes', {routes},{headers: { Authorization: `Bearer ${this.localAuthId}`}})
+        this.serverData.routes = routes
+    },
+
+    async loadRoutes() {
+        const response = (await axios.get('/api/id', {headers: { Authorization: `Bearer ${this.localAuthId}`}}))
+        return response.data?.data?.routes ?? []
+    }
 })

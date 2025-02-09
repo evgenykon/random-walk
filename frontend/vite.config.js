@@ -11,6 +11,7 @@ export default defineConfig({
       '/api': {
         target: 'http://backend:8081',
         changeOrigin: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),
       }
     }

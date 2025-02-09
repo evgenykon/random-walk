@@ -43,6 +43,28 @@ const clearServerData = async () => {
   authStore.generateNewAuth()
   isClearServerData.value = false
 }
+
+const saveToServer = async () => {
+  isLoading.value = true
+  try {
+    await authStore.saveRoutes(marathonStore.list)
+  } catch (e) {
+    console.error('saveToServer', e)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const loadFromServer = async () => {
+  isLoading.value = true
+  try {
+    marathonStore.list = await authStore.loadRoutes()
+  } catch (e) {
+    console.error('saveToServer', e)
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 
@@ -72,6 +94,8 @@ const clearServerData = async () => {
     <cloud-data v-if="showScreen === 'cloud'"
                 @drop-local="isClearLocalData = true"
                 @drop-server="isClearServerData = true"
+                @upload="saveToServer"
+                @download="loadFromServer"
     ></cloud-data>
 
     <about-screen  v-if="showScreen === 'about'"  />
