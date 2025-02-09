@@ -27,7 +27,7 @@ export default defineConfig({
 
     manifest: {
       name: 'RandomWalk',
-      short_name: 'random walk',
+      short_name: 'Random Walk',
       description: 'Random walk',
       theme_color: '#000000',
     },
