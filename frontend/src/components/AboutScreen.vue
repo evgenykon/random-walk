@@ -23,7 +23,7 @@
       </div>
       <div class="block" style="text-align: left; font-size: 12px; margin-bottom: 10px;">
         <strong>Feb 09, 2025 v1.2</strong>
-        <p>Routes can be stored in server! Anonymously.</p>
+        <p>Routes can be stored on server! Anonymously.</p>
         <p>Change naming (Random marathon -> Random walk), update icons</p>
       </div>
       <div class="block" style="text-align: left; font-size: 12px; margin-bottom: 10px;">
