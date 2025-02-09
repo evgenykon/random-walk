@@ -7,7 +7,7 @@ const emit = defineEmits(['openRoute'])
 
 <template>
   <div class="box" style="display: flex;justify-content: center;">
-    <img src="../assets/favicon_1024.png" style="width: 50%; max-width: 500px;">
+    <img src="../assets/favicon_1024_round.png" style="width: 50%; max-width: 500px;">
   </div>
 
   <h3 class="title">My Routes</h3>
