@@ -24,6 +24,10 @@ up-dev:
 
 up:
 	docker compose down --remove-orphans
+	docker compose create redis
+	docker compose start redis
+	docker compose create backend
+	docker compose start backend
 	docker compose up -d nginx
 
 clear:

@@ -17,7 +17,7 @@ server {
     access_log /dev/stdout;
 
     location /api/ {
-        proxy_pass http://localhost:8081/;
+        proxy_pass http://backend:8081/;
     }
 }
 
